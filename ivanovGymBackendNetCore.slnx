@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ivanovGymBackendNetCore.API/ivanovGymBackendNetCore.API.csproj" />
+    <Project Path="src/ivanovGymBackendNetCore.Application/ivanovGymBackendNetCore.Application.csproj" />
+    <Project Path="src/ivanovGymBackendNetCore.Domain/ivanovGymBackendNetCore.Domain.csproj" />
+    <Project Path="src/ivanovGymBackendNetCore.Infrastructure/ivanovGymBackendNetCore.Infrastructure.csproj" />
+  </Folder>
+</Solution>

@@ -1,6 +1,0 @@
-@ivanovGymBackendNetCore_HostAddress = http://localhost:5196
-
-GET {{ivanovGymBackendNetCore_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
