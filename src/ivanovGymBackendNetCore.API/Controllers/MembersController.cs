@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ivanovGymBackendNetCore.API.Controllers;
 
@@ -26,10 +26,10 @@ public class MembersController : ControllerBase
     public async Task<ActionResult<MemberDto>> GetMember(Guid id)
     {
         var member = await _memberService.GetMemberByIdAsync(id);
-        
+
         if (member == null)
             return NotFound();
-            
+
         return Ok(member);
     }
 
@@ -44,10 +44,10 @@ public class MembersController : ControllerBase
     public async Task<ActionResult<MemberDto>> UpdateMember(Guid id, [FromBody] UpdateMemberDto dto)
     {
         var member = await _memberService.UpdateMemberAsync(id, dto);
-        
+
         if (member == null)
             return NotFound();
-            
+
         return Ok(member);
     }
 

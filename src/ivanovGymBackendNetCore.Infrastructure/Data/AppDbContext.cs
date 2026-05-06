@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using ivanovGymBackendNetCore.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ivanovGymBackendNetCore.Infrastructure.Data;
 

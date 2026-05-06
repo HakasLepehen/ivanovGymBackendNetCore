@@ -1,6 +1,6 @@
+using ivanovGymBackendNetCore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ivanovGymBackendNetCore.Domain.Entities;
 
 namespace ivanovGymBackendNetCore.Infrastructure.Data.Configurations;
 
