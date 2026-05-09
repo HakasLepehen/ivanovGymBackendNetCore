@@ -2,5 +2,5 @@ namespace ivanovGymBackendNetCore.Application.Interfaces;
 
 public interface IAuthService
 {
-    Task<string> SignUpAsync(string username, string password);
+    Task<string> SignUpAsync(string email, string password);
 }
