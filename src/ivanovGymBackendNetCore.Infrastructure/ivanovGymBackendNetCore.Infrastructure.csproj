@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\ivanovGymBackendNetCore.Domain\ivanovGymBackendNetCore.Domain.csproj" />
-    <ProjectReference Include="..\ivanovGymBackendNetCore.Application\ivanovGymBackendNetCore.Application.csproj" />
+    <ProjectReference
+      Include="..\ivanovGymBackendNetCore.Domain\ivanovGymBackendNetCore.Domain.csproj" />
+    <ProjectReference
+      Include="..\ivanovGymBackendNetCore.Application\ivanovGymBackendNetCore.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
   </ItemGroup>
 
   <PropertyGroup>

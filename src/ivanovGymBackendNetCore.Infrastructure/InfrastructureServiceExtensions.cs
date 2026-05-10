@@ -1,6 +1,8 @@
+using ivanovGymBackendNetCore.Domain.Entities;
 using ivanovGymBackendNetCore.Domain.Interfaces;
 using ivanovGymBackendNetCore.Infrastructure.Data;
 using ivanovGymBackendNetCore.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +15,14 @@ public static class InfrastructureServiceExtensions
     {
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddIdentity<User, IdentityRole>(options =>
+        {
+            options.SignIn.RequireConfirmedEmail = true;
+            options.User.RequireUniqueEmail = true;
+        })
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddDefaultTokenProviders();
 
         services.AddScoped<IMemberRepository, MemberRepository>();
 

@@ -1,6 +1,6 @@
 using ivanovGymBackendNetCore.Application.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ivanovGymBackendNetCore.Application.DTOs;
 
 namespace ivanovGymBackendNetCore.API.Controllers;
 
@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
   }
 
   [HttpPost]
-  public async Task<IActionResult> Signup(string email, string password)
+  public async Task<IActionResult> Signup(CreateUserDto user)
   {
     try
     {

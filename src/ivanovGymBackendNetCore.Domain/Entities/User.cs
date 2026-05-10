@@ -1,11 +1,10 @@
 using ivanovGymBackendNetCore.Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace ivanovGymBackendNetCore.Domain.Entities;
 
-public class User : BaseEntity
+public class User : IdentityUser
 {
-    public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
     public List<UserRole> Roles { get; set; } = new() { UserRole.User };
     public string? Token { get; set; }
     public Guid? ClientFkId { get; set; }
