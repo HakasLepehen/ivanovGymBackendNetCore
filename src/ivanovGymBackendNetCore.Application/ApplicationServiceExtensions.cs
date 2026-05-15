@@ -12,6 +12,7 @@ public static class ApplicationServiceExtensions
         services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
         services.AddScoped<IMemberService, MemberService>();
+        services.AddScoped<IAuthService, AuthService>();
 
         return services;
     }

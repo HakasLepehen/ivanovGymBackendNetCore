@@ -61,6 +61,7 @@ Entities/
  User.cs
 Enums/UserRole.cs
 Interfaces/IMemberRepository.cs
+JwtSettings.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  ivanovGymBackendNetCore.Domain.AssemblyInfo.cs

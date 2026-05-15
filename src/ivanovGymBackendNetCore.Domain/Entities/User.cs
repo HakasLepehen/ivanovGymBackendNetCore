@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ivanovGymBackendNetCore.Domain.Entities;
 
-public class User : IdentityUser
+public class User : IdentityUser<Guid>
 {
-    public List<UserRole> Roles { get; set; } = new() { UserRole.User };
+    public string[] Roles { get; set; } = new[] { "user" };
     public string? Token { get; set; }
     public Guid? ClientFkId { get; set; }
 }
