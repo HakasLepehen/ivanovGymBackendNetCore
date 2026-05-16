@@ -60,7 +60,9 @@ Entities/
  Member.cs
  User.cs
 Enums/UserRole.cs
-Interfaces/IMemberRepository.cs
+Interfaces/
+ IClientRepository.cs
+ IMemberRepository.cs
 JwtSettings.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs

@@ -35,7 +35,7 @@ public class AuthController : ControllerBase
       }
 
       string token = await _authService.SignUpAsync(model.Email, model.Password);
-      return Ok(new { token, message = "User registered successfully" });
+      return Ok(new { token, message = "Пользователь успешно зарегистрирован" });
     }
     catch (Exception ex)
     {

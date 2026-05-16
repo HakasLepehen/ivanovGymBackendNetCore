@@ -69,7 +69,9 @@ obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  ivanovGymBackendNetCore.Infrastructure.AssemblyInfo.cs
  ivanovGymBackendNetCore.Infrastructure.GlobalUsings.g.cs
-Repositories/MemberRepository.cs
+Repositories/
+ ClientRepository.cs
+ MemberRepository.cs
 
 [metadataReferences]
 ../
