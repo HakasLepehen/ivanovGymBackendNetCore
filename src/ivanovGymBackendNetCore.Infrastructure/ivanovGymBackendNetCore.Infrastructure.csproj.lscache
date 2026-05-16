@@ -64,6 +64,8 @@ InfrastructureServiceExtensions.cs
 Migrations/
  20260515175408_InitialCreate.cs
  20260515175408_InitialCreate.Designer.cs
+ 20260516152144_addedEmailToClientEntity.cs
+ 20260516152144_addedEmailToClientEntity.Designer.cs
  AppDbContextModelSnapshot.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs

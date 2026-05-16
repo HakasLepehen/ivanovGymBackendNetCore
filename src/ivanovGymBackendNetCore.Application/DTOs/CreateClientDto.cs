@@ -1,12 +1,8 @@
-namespace ivanovGymBackendNetCore.Domain.Entities;
+namespace ivanovGymBackendNetCore.Application.DTOs;
 
-public class Client
+public class CreateClientDto
 {
-    public int Id { get; set; }
-    public DateTime? CreatedAt { get; set; }
     public string FullName { get; set; } = string.Empty;
-    public required string Email { get; set; }
-    public string? Age { get; set; }
     public string? Target { get; set; }
     public string? Experience { get; set; }
     public string? Sleep { get; set; }

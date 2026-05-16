@@ -57,10 +57,13 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 ApplicationServiceExtensions.cs
 DTOs/
  AuthDtos.cs
+ ClientDto.cs
+ CreateClientDto.cs
  CreateUserDto.cs
  MemberDto.cs
 Interfaces/
  IAuthService.cs
+ IClientService.cs
  IMemberService.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
@@ -69,6 +72,7 @@ obj/Debug/net10.0/
 Profiles/MappingProfile.cs
 Services/
  AuthService.cs
+ ClientService.cs
  MemberService.cs
 
 [metadataReferences]
