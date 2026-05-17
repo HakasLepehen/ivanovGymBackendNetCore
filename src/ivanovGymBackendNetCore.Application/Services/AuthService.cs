@@ -6,7 +6,6 @@ using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
 using ivanovGymBackendNetCore.Domain;
 using ivanovGymBackendNetCore.Domain.Entities;
-using ivanovGymBackendNetCore.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,17 +16,20 @@ namespace ivanovGymBackendNetCore.Application.Services;
 public class AuthService : IAuthService
 {
     private readonly UserManager<User> _userManager;
+    private readonly IClientService _clientService;
     private readonly JwtSettings _jwtSettings;
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(
         UserManager<User> userManager,
         IOptions<JwtSettings> jwtSettings,
-        ILogger<AuthService> logger)
+        ILogger<AuthService> logger,
+        IClientService clientService)
     {
         _userManager = userManager;
         _jwtSettings = jwtSettings.Value;
         _logger = logger;
+        _clientService = clientService;
     }
 
     public async Task<string> SignUpAsync(string email, string password)
@@ -47,13 +49,16 @@ public class AuthService : IAuthService
             throw new Exception($"User creation failed: {errors}");
         }
 
+        // Создаем клиента при успешной регистрации
+        _clientService.CreateClientAsync();
+
         return await GenerateJwtTokenAsync(user);
     }
 
     public async Task<string> SignInAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email) ?? throw new Exception("Invalid credentials");
-        var passwordValid = await _userManager.CheckPasswordAsync(user, password);
+        bool passwordValid = await _userManager.CheckPasswordAsync(user, password);
 
         if (!passwordValid)
         {
@@ -65,18 +70,18 @@ public class AuthService : IAuthService
 
     public async Task<AuthResultDto> AuthenticateAsync(string email, string password)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if (user == null)
-        {
-            throw new Exception("User not found");
-        }
-
+        var user = await _userManager.FindByEmailAsync(email) ?? throw new Exception("User not found");
+        var client = await _clientService.GetClientByEmailAsync(email);
         var passwordValid = await _userManager.CheckPasswordAsync(user, password);
 
         if (!passwordValid)
         {
-            throw new Exception("Invalid password");
+            throw new Exception("Неверный пароль");
+        }
+
+        if (!client.IsActive)
+        {
+            throw new Exception("Пользователь неактивен. Дальнейший вход невозможен");
         }
 
         var token = await GenerateJwtTokenAsync(user);

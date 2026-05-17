@@ -11,6 +11,7 @@ namespace ivanovGymBackendNetCore.API.Controllers;
 public class AuthController : ControllerBase
 {
   private readonly IAuthService _authService;
+  private readonly IClientService _clientService;
   private readonly ILogger<AuthController> _logger;
 
   public AuthController(

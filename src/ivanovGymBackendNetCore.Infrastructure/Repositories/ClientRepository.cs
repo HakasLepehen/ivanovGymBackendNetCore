@@ -42,4 +42,8 @@ public class ClientRepository : IClientRepository
         await _context.SaveChangesAsync();
         return client;
     }
+    public async Task<Client?> GetByEmailAsync(string email)
+    {
+        return await _context.Clients.FirstAsync(c => c.Email == email);
+    }
 }
