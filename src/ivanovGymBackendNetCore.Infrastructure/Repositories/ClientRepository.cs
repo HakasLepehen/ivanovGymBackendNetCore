@@ -44,33 +44,10 @@ public class ClientRepository : IClientRepository
     }
     public async Task<Client?> GetByEmailAsync(string email)
     {
-        Console.WriteLine($"[DEBUG] Поиск клиента по email: '{email}'");
-        Console.WriteLine($"[DEBUG] Длина email: {email.Length}");
-
-        // Проверка на пробелы
-        if (email != email.Trim())
-        {
-            Console.WriteLine($"[DEBUG] Email содержит пробелы! Trimmed: '{email.Trim()}'");
-        }
-
-        var clients = await _context.Clients.ToListAsync();
-        Console.WriteLine($"[DEBUG] Всего клиентов в БД: {clients.Count}");
-
-        foreach (var c in clients.Take(5))
-        {
-            Console.WriteLine($"[DEBUG]   - ID: {c.Id}, Email: '{c.Email}' (len={c.Email.Length})");
-        }
-
         var client = await _context.Clients
-            .FirstOrDefaultAsync(c => c.Email.ToLower() == email.Trim().ToLower());
+            .FirstOrDefaultAsync(c => c.Email.ToLower() == email.Trim().ToLower())
+            ?? throw new Exception("Не удалось найти клиента");
 
-        if (client == null)
-        {
-            Console.WriteLine("[DEBUG] Не удалось найти клиента");
-            return null;
-        }
-
-        Console.WriteLine($"[DEBUG] Найдён клиент: ID={client.Id}, Email={client.Email}");
         return client;
     }
 }
