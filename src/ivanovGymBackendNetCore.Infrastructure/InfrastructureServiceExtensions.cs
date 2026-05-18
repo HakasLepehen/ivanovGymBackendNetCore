@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace ivanovGymBackendNetCore.Infrastructure;
 
@@ -14,7 +15,9 @@ public static class InfrastructureServiceExtensions
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+            .LogTo(Console.WriteLine, LogLevel.Information)
+            .EnableSensitiveDataLogging());
 
         services.AddIdentity<User, IdentityRole<Guid>>(options =>
         {
