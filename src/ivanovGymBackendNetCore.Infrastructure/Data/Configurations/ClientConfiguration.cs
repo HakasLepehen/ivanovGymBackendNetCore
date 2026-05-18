@@ -61,7 +61,6 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.Property(c => c.Guid)
             .HasColumnType("uuid")
-            .HasDefaultValueSql("gen_random_uuid()")
             .IsRequired();
 
         builder.Property(c => c.Limits)

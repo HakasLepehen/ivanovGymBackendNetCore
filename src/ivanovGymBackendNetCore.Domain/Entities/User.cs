@@ -7,5 +7,5 @@ public class User : IdentityUser<Guid>
 {
     public string[] Roles { get; set; } = new[] { "user" };
     public string? Token { get; set; }
-    public Guid? ClientFkId { get; set; }
+    public int? ClientFkId { get; set; }
 }

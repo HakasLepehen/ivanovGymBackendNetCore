@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ivanovGymBackendNetCore.Infrastructure.Data;
@@ -12,9 +13,11 @@ using ivanovGymBackendNetCore.Infrastructure.Data;
 namespace ivanovGymBackendNetCore.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260517171313_ChangeClientFkIdToInt")]
+    partial class ChangeClientFkIdToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,7 +208,9 @@ namespace ivanovGymBackendNetCore.Infrastructure.Migrations
                         .HasColumnName("fullName");
 
                     b.Property<Guid>("Guid")
-                        .HasColumnType("uuid");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()

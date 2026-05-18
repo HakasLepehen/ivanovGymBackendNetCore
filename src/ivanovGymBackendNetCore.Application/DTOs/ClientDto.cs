@@ -2,7 +2,7 @@ namespace ivanovGymBackendNetCore.Application.DTOs;
 
 public class ClientDto
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public DateTime? CreatedAt { get; set; }
     public string FullName { get; set; } = string.Empty;
     public string? Age { get; set; }

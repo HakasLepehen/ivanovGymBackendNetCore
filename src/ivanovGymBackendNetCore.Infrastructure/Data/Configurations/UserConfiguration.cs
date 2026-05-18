@@ -33,7 +33,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.ClientFkId)
             .HasColumnName("client_fk_id")
-            .HasColumnType("uuid")
             .IsRequired(false);
 
         builder.HasIndex(u => u.ClientFkId)

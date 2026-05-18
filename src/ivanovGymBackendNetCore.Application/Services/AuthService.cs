@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -6,6 +7,7 @@ using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
 using ivanovGymBackendNetCore.Domain;
 using ivanovGymBackendNetCore.Domain.Entities;
+using ivanovGymBackendNetCore.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -49,8 +51,18 @@ public class AuthService : IAuthService
             throw new Exception($"User creation failed: {errors}");
         }
 
-        // Создаем клиента при успешной регистрации
-        _clientService.CreateClientAsync();
+        var client = new CreateClientDto
+        {
+            Email = email,
+            Guid = user.Id,
+            FullName = email,
+            IsActive = true,
+        };
+
+        ClientDto savedClient = await _clientService.CreateClientAsync(client);
+
+        user.ClientFkId = savedClient.Id;
+        await _userManager.UpdateAsync(user);
 
         return await GenerateJwtTokenAsync(user);
     }
@@ -71,7 +83,7 @@ public class AuthService : IAuthService
     public async Task<AuthResultDto> AuthenticateAsync(string email, string password)
     {
         var user = await _userManager.FindByEmailAsync(email) ?? throw new Exception("User not found");
-        var client = await _clientService.GetClientByEmailAsync(email);
+        var client = await _clientService.GetClientByEmailAsync(email) ?? throw new Exception("Client not found");
         var passwordValid = await _userManager.CheckPasswordAsync(user, password);
 
         if (!passwordValid)

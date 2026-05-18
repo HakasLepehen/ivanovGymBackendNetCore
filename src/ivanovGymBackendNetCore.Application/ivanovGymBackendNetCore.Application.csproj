@@ -1,11 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <ProjectReference Include="..\ivanovGymBackendNetCore.Domain\ivanovGymBackendNetCore.Domain.csproj" />
+    <ProjectReference
+      Include="..\ivanovGymBackendNetCore.Domain\ivanovGymBackendNetCore.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.7" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="10.0.7" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="10.0.7" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />

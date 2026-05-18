@@ -30,12 +30,12 @@ public class ClientService : IClientService
         return _mapper.Map<ClientDto>(client);
     }
 
-    public async Task<MemberDto> CreateClientAsync(CreateClientDto dto)
+    public async Task<ClientDto> CreateClientAsync(CreateClientDto dto)
     {
         var client = _mapper.Map<Client>(dto);
         client.IsActive = true;
 
         var createdClient = await _clientRepository.CreateAsync(client);
-        return _mapper.Map<MemberDto>(createdClient);
+        return _mapper.Map<ClientDto>(createdClient);
     }
 }
