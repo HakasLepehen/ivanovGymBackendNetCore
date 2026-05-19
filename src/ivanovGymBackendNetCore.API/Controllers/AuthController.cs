@@ -24,8 +24,8 @@ public class AuthController : ControllerBase
   /// <summary>
   /// Регистрация нового пользователя
   /// </summary>
-  [HttpPost("register")]
-  public async Task<IActionResult> Register([FromBody] RegisterDto model)
+  [HttpPost("signup")]
+  public async Task<IActionResult> SignUp([FromBody] RegisterDto model)
   {
     try
     {
@@ -57,7 +57,7 @@ public class AuthController : ControllerBase
         return BadRequest(new { error = "Email and password are required" });
       }
 
-      var result = await _authService.AuthenticateAsync(model.Email, model.Password);
+      var result = await _authService.SignInAsync(model.Email, model.Password);
       return Ok(result);
     }
     catch (Exception ex)

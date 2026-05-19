@@ -36,10 +36,11 @@ public class AuthService : IAuthService
 
     public async Task<string> SignUpAsync(string email, string password)
     {
+        string normalizedEmail = email.Trim();
         var user = new User
         {
-            UserName = email,
-            Email = email,
+            UserName = normalizedEmail,
+            Email = normalizedEmail,
             EmailConfirmed = true
         };
 
@@ -53,9 +54,9 @@ public class AuthService : IAuthService
 
         var client = new CreateClientDto
         {
-            Email = email,
+            Email = normalizedEmail,
             Guid = user.Id,
-            FullName = email,
+            FullName = normalizedEmail,
             IsActive = true,
         };
 
@@ -67,24 +68,12 @@ public class AuthService : IAuthService
         return await GenerateJwtTokenAsync(user);
     }
 
-    public async Task<string> SignInAsync(string email, string password)
+    public async Task<AuthResultDto> SignInAsync(string email, string password)
     {
-        var user = await _userManager.FindByEmailAsync(email) ?? throw new Exception("Invalid credentials");
+        string normalizedEmail = email.Trim();
+        var user = await _userManager.FindByEmailAsync(normalizedEmail) ?? throw new Exception("User not found");
+        var client = await _clientService.GetClientByEmailAsync(normalizedEmail) ?? throw new Exception("Client not found");
         bool passwordValid = await _userManager.CheckPasswordAsync(user, password);
-
-        if (!passwordValid)
-        {
-            throw new Exception("Invalid credentials");
-        }
-
-        return await GenerateJwtTokenAsync(user);
-    }
-
-    public async Task<AuthResultDto> AuthenticateAsync(string email, string password)
-    {
-        var user = await _userManager.FindByEmailAsync(email) ?? throw new Exception("User not found");
-        var client = await _clientService.GetClientByEmailAsync(email) ?? throw new Exception("Client not found");
-        var passwordValid = await _userManager.CheckPasswordAsync(user, password);
 
         if (!passwordValid)
         {
@@ -96,8 +85,8 @@ public class AuthService : IAuthService
             throw new Exception("Пользователь неактивен. Дальнейший вход невозможен");
         }
 
-        var token = await GenerateJwtTokenAsync(user);
-        var refreshToken = GenerateRefreshToken();
+        string token = await GenerateJwtTokenAsync(user);
+        string refreshToken = GenerateRefreshToken();
 
         user.Token = refreshToken;
         await _userManager.UpdateAsync(user);

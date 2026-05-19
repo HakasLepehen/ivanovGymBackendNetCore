@@ -16,9 +16,7 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference
-      Include="..\ivanovGymBackendNetCore.Application\ivanovGymBackendNetCore.Application.csproj" />
-    <ProjectReference
-      Include="..\ivanovGymBackendNetCore.Infrastructure\ivanovGymBackendNetCore.Infrastructure.csproj" />
+    <ProjectReference Include="..\ivanovGymBackendNetCore.Application\ivanovGymBackendNetCore.Application.csproj" />
+    <ProjectReference Include="..\ivanovGymBackendNetCore.Infrastructure\ivanovGymBackendNetCore.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
