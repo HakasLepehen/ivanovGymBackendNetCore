@@ -28,7 +28,7 @@ public class ClientRepository : IClientRepository
             await _context.SaveChangesAsync();
         }
     }
-    public async Task<IEnumerable<Client>> GetAllAsync()
+    public async Task<List<Client>> GetAllAsync()
     {
         return await _context.Clients.ToListAsync();
     }

@@ -16,7 +16,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .ValueGeneratedOnAdd();
 
         builder.Property(u => u.Email)
-            .HasColumnType("citext")
+            .HasColumnType("text")
             .IsRequired();
 
         builder.HasIndex(u => u.Email)

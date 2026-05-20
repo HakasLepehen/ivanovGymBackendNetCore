@@ -5,7 +5,7 @@ namespace ivanovGymBackendNetCore.Application.Interfaces;
 
 public interface IClientService
 {
-    Task<IEnumerable<ClientDto>> GetAllClientsAsync();
+    Task<List<ClientDto>> GetClientsAsync();
     // Task<MemberDto?> GetClientByIdAsync(Guid id);
     Task<ClientDto> CreateClientAsync(CreateClientDto dto);
     // Task<MemberDto?> UpdateClientAsync(Guid id, UpdateMemberDto dto);

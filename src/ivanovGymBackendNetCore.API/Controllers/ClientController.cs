@@ -1,5 +1,6 @@
 using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ivanovGymBackendNetCore.API.Controllers;
@@ -17,12 +18,18 @@ public class ClientController : ControllerBase
         _logger = logger;
 
     }
+
+    /// <summary>
+    /// Получение списка клиентов
+    /// </summary>
+    /// <returns></returns>
+    // [Authorize]
     [HttpGet("getAll")]
     public async Task<IActionResult> GetClients()
     {
         try
         {
-            IEnumerable<ClientDto> res = await _clientService.GetAllClientsAsync();
+            List<ClientDto> res = await _clientService.GetClientsAsync();
             return Ok(res);
         }
         catch (Exception ex)
