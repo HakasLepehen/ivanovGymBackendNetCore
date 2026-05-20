@@ -22,7 +22,7 @@ public class ClientController : ControllerBase
     {
         try
         {
-            
+            return Ok();
         }
         catch (Exception ex)
         {

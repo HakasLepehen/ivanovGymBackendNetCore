@@ -113,7 +113,7 @@ public class AuthService : IAuthService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        foreach (var role in user.Roles)
+        foreach (string role in user.Roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
         }
@@ -131,7 +131,7 @@ public class AuthService : IAuthService
 
     private static string GenerateRefreshToken()
     {
-        var randomNumber = new byte[64];
+        byte[] randomNumber = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
         return Convert.ToBase64String(randomNumber);

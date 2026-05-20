@@ -74,8 +74,8 @@ public class AuthController : ControllerBase
   [Authorize]
   public IActionResult GetCurrentUser()
   {
-    var email = User.FindFirst(ClaimTypes.Email)?.Value;
-    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    string email = User.FindFirst(ClaimTypes.Email)?.Value;
+    string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
     return Ok(new
