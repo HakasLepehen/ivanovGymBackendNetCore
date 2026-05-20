@@ -38,4 +38,10 @@ public class ClientService : IClientService
         var createdClient = await _clientRepository.CreateAsync(client);
         return _mapper.Map<ClientDto>(createdClient);
     }
+
+    public async Task<IEnumerable<ClientDto>> GetClientsAsync()
+    {
+        var clients = await _clientRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<ClientDto>>(clients);
+    }
 }

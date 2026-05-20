@@ -17,12 +17,13 @@ public class ClientController : ControllerBase
         _logger = logger;
 
     }
-    [HttpGet("getClients")]
+    [HttpGet("getAll")]
     public async Task<IActionResult> GetClients()
     {
         try
         {
-            return Ok();
+            IEnumerable<ClientDto> res = await _clientService.GetAllClientsAsync();
+            return Ok(res);
         }
         catch (Exception ex)
         {
