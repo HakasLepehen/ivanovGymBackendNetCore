@@ -64,7 +64,7 @@ public class ClientController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Не удалось отредактировать клиента клиента",);
+            _logger.LogError(ex, "Не удалось отредактировать клиента клиента");
             return BadRequest(new { error = ex.Message });
         }
     }
