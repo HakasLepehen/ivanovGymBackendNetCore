@@ -38,4 +38,34 @@ public class ClientController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+
+    [Authorize]
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteClient(int id)
+    {
+        try
+        {
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Не удалось удалить клиента");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> UpdateClient(ClientDto client)
+    {
+        try
+        {
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Не удалось отредактировать клиента клиента",);
+            return BadRequest(new { error = ex.Message });
+        }
+    }
 }
