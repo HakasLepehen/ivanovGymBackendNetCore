@@ -23,8 +23,8 @@ public class ClientController : ControllerBase
     /// Получение списка клиентов
     /// </summary>
     /// <returns></returns>ad
-    [Authorize]
-    [HttpGet("getAll")]
+    //[Authorize]
+    [HttpGet]
     public async Task<IActionResult> GetClients()
     {
         try
@@ -40,7 +40,7 @@ public class ClientController : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete("delete")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteClient(int id)
     {
         try
@@ -55,7 +55,7 @@ public class ClientController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost]
+    [HttpPost("{id}")]
     public async Task<IActionResult> UpdateClient(ClientDto client)
     {
         try
