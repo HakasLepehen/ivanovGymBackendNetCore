@@ -23,7 +23,7 @@ public class ClientController : ControllerBase
     /// Получение списка клиентов
     /// </summary>
     /// <returns></returns>ad
-    //[Authorize]
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetClients()
     {

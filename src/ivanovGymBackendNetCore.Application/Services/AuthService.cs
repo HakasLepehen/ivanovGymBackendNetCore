@@ -71,8 +71,8 @@ public class AuthService : IAuthService
     public async Task<AuthResultDto> SignInAsync(string email, string password)
     {
         string normalizedEmail = email.Trim();
-        var user = await _userManager.FindByEmailAsync(normalizedEmail) ?? throw new Exception("User not found");
-        var client = await _clientService.GetClientByEmailAsync(normalizedEmail) ?? throw new Exception("Client not found");
+        var user = await _userManager.FindByEmailAsync(normalizedEmail) ?? throw new Exception("Пользователь не найден");
+        var client = await _clientService.GetClientByEmailAsync(normalizedEmail) ?? throw new Exception("Клиент не найден");
         bool passwordValid = await _userManager.CheckPasswordAsync(user, password);
 
         if (!passwordValid)

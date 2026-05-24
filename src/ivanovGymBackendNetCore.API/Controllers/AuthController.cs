@@ -63,7 +63,7 @@ public class AuthController : ControllerBase
     catch (Exception ex)
     {
       _logger.LogError(ex, "Login failed for email: {Email}", model.Email);
-      return Unauthorized(new { error = ex.Message });
+      return BadRequest(new { error = ex.Message });
     }
   }
 
