@@ -10,15 +10,15 @@ namespace ivanovGymBackendNetCore.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<int>(
-                name: "Age",
-                table: "clients",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true,
-                oldDefaultValue: "");
+            migrationBuilder.Sql(@"
+                ALTER TABLE clients ALTER COLUMN ""Age"" DROP DEFAULT;
+                ALTER TABLE clients 
+                ALTER COLUMN ""Age"" TYPE int 
+                USING CASE 
+                    WHEN ""Age"" ~ '^[0-9]+$' THEN ""Age""::integer
+                    ELSE NULL
+                END;
+            ");
         }
 
         /// <inheritdoc />
