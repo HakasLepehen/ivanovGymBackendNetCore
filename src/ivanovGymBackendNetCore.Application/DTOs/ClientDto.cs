@@ -5,7 +5,7 @@ public class ClientDto
     public int? Id { get; set; }
     public DateTime? CreatedAt { get; set; }
     public string FullName { get; set; } = string.Empty;
-    public string? Age { get; set; }
+    public int? Age { get; set; } = 0;
     public string? Target { get; set; }
     public string? Experience { get; set; }
     public string? Sleep { get; set; }

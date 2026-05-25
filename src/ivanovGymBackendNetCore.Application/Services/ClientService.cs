@@ -44,4 +44,9 @@ public class ClientService : IClientService
         var clients = await _clientRepository.GetAllAsync();
         return _mapper.Map<List<ClientDto>>(clients);
     }
+
+    public async Task PatchClient(ClientDto dto)
+    {
+
+    }
 }

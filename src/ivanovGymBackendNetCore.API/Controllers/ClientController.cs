@@ -55,8 +55,8 @@ public class ClientController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("{id}")]
-    public async Task<IActionResult> UpdateClient(ClientDto client)
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateClient([FromBody] ClientDto dto)
     {
         try
         {

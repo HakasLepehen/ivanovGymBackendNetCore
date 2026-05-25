@@ -11,4 +11,5 @@ public interface IClientService
     // Task<MemberDto?> UpdateClientAsync(Guid id, UpdateMemberDto dto);
     Task DeleteClientAsync(Guid id);
     Task<ClientDto> GetClientByEmailAsync(string email);
+    Task PatchClient(ClientDto model);
 }

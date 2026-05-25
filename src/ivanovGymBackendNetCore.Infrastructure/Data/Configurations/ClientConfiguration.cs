@@ -28,8 +28,8 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .IsRequired();
 
         builder.Property(c => c.Age)
-            .HasColumnType("text")
-            .HasDefaultValue("")
+            .HasColumnType("int")
+            .HasDefaultValue(null)
             .IsRequired(false);
 
         builder.Property(c => c.Target)
