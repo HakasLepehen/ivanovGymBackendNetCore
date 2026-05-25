@@ -47,6 +47,6 @@ public class ClientService : IClientService
 
     public async Task PatchClient(ClientDto dto)
     {
-
+        var client = _mapper.Map<Client>(dto);
     }
 }

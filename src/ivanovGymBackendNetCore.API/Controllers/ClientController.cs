@@ -60,6 +60,7 @@ public class ClientController : ControllerBase
     {
         try
         {
+            await _clientService.PatchClient(dto);
             return Ok();
         }
         catch (Exception ex)
