@@ -29,7 +29,8 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 
         builder.Property(c => c.Age)
             .HasColumnType("text")
-            .HasDefaultValue("");
+            .HasDefaultValue("")
+            .IsRequired(false);
 
         builder.Property(c => c.Target)
             .HasColumnType("text")
