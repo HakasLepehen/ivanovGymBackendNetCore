@@ -5,7 +5,7 @@ namespace ivanovGymBackendNetCore.Domain.Interfaces;
 public interface IClientRepository
 {
     Task<List<Client>> GetAllAsync();
-    Task<Client?> GetByIdAsync(Guid id);
+    Task<Client?> GetByIdAsync(int id);
     Task<Client?> GetByEmailAsync(string email);
     Task<Client> CreateAsync(Client client);
     Task<Client> UpdateAsync(Client client);

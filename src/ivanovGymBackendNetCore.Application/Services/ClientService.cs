@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.Execution;
 using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
 using ivanovGymBackendNetCore.Domain.Entities;
@@ -45,8 +46,16 @@ public class ClientService : IClientService
         return _mapper.Map<List<ClientDto>>(clients);
     }
 
-    public async Task PatchClient(ClientDto dto)
+    public async Task<ClientDto> UpdateClientAsync(int id, ClientDto dto)
     {
-        var client = _mapper.Map<Client>(dto);
+        var client = await _clientRepository.GetByIdAsync(id);
+
+        if (client == null) return null;
+
+        _mapper.Map(dto, client);
+
+        var updatedClient = await _clientRepository.UpdateAsync(client);
+        return _mapper.Map<ClientDto>(updatedClient);
+        //var client = _mapper.Map<Client>(dto);
     }
 }

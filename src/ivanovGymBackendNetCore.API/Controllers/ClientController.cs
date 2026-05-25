@@ -56,12 +56,15 @@ public class ClientController : ControllerBase
 
     [Authorize]
     [HttpPatch("{id}")]
-    public async Task<IActionResult> UpdateClient([FromBody] ClientDto dto)
+    public async Task<ActionResult<ClientDto>> UpdateClient(int id, [FromBody] ClientDto dto)
     {
         try
         {
-            await _clientService.PatchClient(dto);
-            return Ok();
+            var client = await _clientService.UpdateClientAsync(id, dto);
+
+            if (client == null) return NotFound();
+
+            return Ok(client);
         }
         catch (Exception ex)
         {

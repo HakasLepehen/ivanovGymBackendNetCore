@@ -32,7 +32,7 @@ public class ClientRepository : IClientRepository
     {
         return await _context.Clients.ToListAsync();
     }
-    public async Task<Client?> GetByIdAsync(Guid id)
+    public async Task<Client?> GetByIdAsync(int id)
     {
         return await _context.Clients.FindAsync(id);
     }
