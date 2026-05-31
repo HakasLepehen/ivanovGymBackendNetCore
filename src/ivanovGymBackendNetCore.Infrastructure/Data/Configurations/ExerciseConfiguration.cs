@@ -33,8 +33,8 @@ public class ExerciseConfiguration : IEntityTypeConfiguration<Exercise>
 
         builder.Property(e => e.MuscleGroup)
             .HasColumnName("muscle_group")
-            .HasColumnType("text")
-            .HasDefaultValue("")
+            .HasColumnType("int")
+            .HasDefaultValue(null)
             .IsRequired(false);
     }
 }
