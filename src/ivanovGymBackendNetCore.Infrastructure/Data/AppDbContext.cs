@@ -13,6 +13,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
 
     public DbSet<Member> Members { get; set; }
     public DbSet<Client> Clients { get; set; }
+    public DbSet<Exercise> Exercises { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -33,6 +33,7 @@ public static class InfrastructureServiceExtensions
 
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
+        services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
         return services;
     }
