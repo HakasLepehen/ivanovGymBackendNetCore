@@ -15,5 +15,6 @@ public class MappingProfile : Profile
         CreateMap<Client, ClientDto>();
         CreateMap<ClientDto, Client>();
         CreateMap<ExerciseDto, Exercise>();
+        CreateMap<Exercise, ExerciseDto>();
     }
 }
