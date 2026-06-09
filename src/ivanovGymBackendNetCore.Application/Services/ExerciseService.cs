@@ -27,4 +27,9 @@ public class ExerciseService : IExerciseService
         Exercise exercise = _mapper.Map<Exercise>(dto);
         await _exerciseRepository.CreateAsync(exercise);
     }
+
+    public async Task DeleteExerciseAsync(int id)
+    {
+        await _exerciseRepository.DeleteAsync(id);
+    }
 }

@@ -37,6 +37,11 @@ public class ExerciseController : ControllerBase
             return BadRequest(new { error = ex.Message });
         }
     }
+    /// <summary>
+    /// добавление упражнения
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddExercise(CreateExerciseDto dto)
@@ -49,6 +54,22 @@ public class ExerciseController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while adding exercise");
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteExercise(int id)
+    {
+        try
+        {
+            await _exerciseService.DeleteExerciseAsync(id);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while deleting exercise");
             return BadRequest(new { error = ex.Message });
         }
     }
