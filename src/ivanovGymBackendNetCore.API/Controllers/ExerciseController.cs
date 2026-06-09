@@ -18,9 +18,13 @@ public class ExerciseController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Получение списка упражнений
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> Getexercises()
+    public async Task<IActionResult> GetExercises()
     {
         try
         {
@@ -30,7 +34,22 @@ public class ExerciseController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while getting exercises");
-            return BadRequest(new {error = ex.Message});
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> AddExercise(CreateExerciseDto dto)
+    {
+        try
+        {
+            await _exerciseService.AddExerciseAsync(dto);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while adding exercise");
+            return BadRequest(new { error = ex.Message });
         }
     }
 }

@@ -34,7 +34,6 @@ public class ExerciseConfiguration : IEntityTypeConfiguration<Exercise>
         builder.Property(e => e.MuscleGroup)
             .HasColumnName("muscle_group")
             .HasColumnType("int")
-            .HasDefaultValue(null)
-            .IsRequired(false);
+            .IsRequired(true);
     }
 }
