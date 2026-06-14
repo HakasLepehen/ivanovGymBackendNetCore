@@ -22,7 +22,7 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .IsRequired(false);
 
         builder.Property(c => c.FullName)
-            .HasColumnName("fullName")
+            .HasColumnName("full_name")
             .HasColumnType("text")
             .HasDefaultValue("")
             .IsRequired();

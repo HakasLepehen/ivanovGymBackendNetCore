@@ -45,6 +45,49 @@ docker-compose up -d
 
 Это запустит PostgreSQL на порту 5432.
 
+## Работа с миграциями Entity Framework Core
+
+Миграции позволяют синхронизировать модель данных с базой данных PostgreSQL.
+
+### Создание новой миграции
+
+После изменения сущностей или конфигураций создайте миграцию:
+
+```bash
+dotnet ef migrations add MigrationName --project src/ivanovGymBackendNetCore.Infrastructure --startup-project src/ivanovGymBackendNetCore.API
+```
+
+**Пример:**
+```bash
+dotnet ef migrations add AddTrainingsTable --project src/ivanovGymBackendNetCore.Infrastructure --startup-project src/ivanovGymBackendNetCore.API
+```
+
+### Применение миграций к базе данных
+
+```bash
+dotnet ef database update --project src/ivanovGymBackendNetCore.Infrastructure --startup-project src/ivanovGymBackendNetCore.API
+```
+
+### Удаление последней миграции
+
+Если миграция создана с ошибкой:
+
+```bash
+dotnet ef migrations remove --project src/ivanovGymBackendNetCore.Infrastructure --startup-project src/ivanovGymBackendNetCore.API
+```
+
+### Просмотр состояния миграций
+
+```bash
+dotnet ef migrations list --project src/ivanovGymBackendNetCore.Infrastructure --startup-project src/ivanovGymBackendNetCore.API
+```
+
+### Установка инструментов EF Core (если команды не работают)
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
 ## Запуск проекта
 
 ### Сборка решения
