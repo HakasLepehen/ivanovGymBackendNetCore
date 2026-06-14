@@ -24,7 +24,11 @@ public class TrainingRepository : ITrainingRepository
         _context.Trainings.Update(targetTraining);
         await _context.SaveChangesAsync();
     }
-    public Task<Training> CreateAsync(Training model) => throw new NotImplementedException();
+    public async Task CreateAsync(Training model)
+    {
+        await _context.Trainings.AddAsync(model);
+        await _context.SaveChangesAsync();
+    }
     public async Task DeleteAsync(int id)
     {
         var targetTraining = await _context.Trainings.FindAsync(id);
