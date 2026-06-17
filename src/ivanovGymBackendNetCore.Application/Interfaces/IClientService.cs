@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using ivanovGymBackendNetCore.Application.DTOs;
 
 namespace ivanovGymBackendNetCore.Application.Interfaces;
