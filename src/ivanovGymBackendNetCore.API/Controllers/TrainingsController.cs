@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
 using ivanovGymBackendNetCore.Application.Services;
@@ -19,6 +21,10 @@ public class TrainingsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Получение списка тренировок
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetTrainings()
@@ -31,6 +37,29 @@ public class TrainingsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Не удалось получить список тренировок");
+            return BadRequest(ex);
+        }
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> CreateTraining()
+    {
+        try
+        {
+            using var reader = new StreamReader(Request.Body);
+            string body = await reader.ReadToEndAsync();
+
+            var model = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
+
+
+            _logger.LogInformation("Тело запроса CreateTraining: {Body}", body);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Не удалось создать тренировку");
             return BadRequest(ex);
         }
     }
