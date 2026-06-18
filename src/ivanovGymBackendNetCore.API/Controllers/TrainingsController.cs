@@ -49,7 +49,7 @@ public class TrainingsController : ControllerBase
         {
             TrainingDto res = await _trainingService.CreateTraining(dto);
 
-            return Ok(dto);
+            return Ok(res);
         }
         catch (Exception ex)
         {
