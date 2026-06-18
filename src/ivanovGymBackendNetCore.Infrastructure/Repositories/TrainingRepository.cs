@@ -24,10 +24,12 @@ public class TrainingRepository : ITrainingRepository
         _context.Trainings.Update(targetTraining);
         await _context.SaveChangesAsync();
     }
-    public async Task CreateAsync(Training model)
+    public async Task<Training> CreateAsync(Training model)
     {
         await _context.Trainings.AddAsync(model);
         await _context.SaveChangesAsync();
+
+        return model;
     }
     public async Task DeleteAsync(int id)
     {

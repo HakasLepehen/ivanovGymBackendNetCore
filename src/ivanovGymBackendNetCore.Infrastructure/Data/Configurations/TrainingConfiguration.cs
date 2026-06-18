@@ -17,7 +17,7 @@ public class TrainingConfiguration : IEntityTypeConfiguration<Training>
 
         builder.Property(c => c.PlannedDate)
             .HasColumnName("planned_date")
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamptz")
             .IsRequired(true);
 
         builder.Property(c => c.IsCompleted)

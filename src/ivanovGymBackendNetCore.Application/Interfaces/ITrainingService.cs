@@ -5,4 +5,5 @@ namespace ivanovGymBackendNetCore.Application.Interfaces;
 public interface ITrainingService
 {
     Task<List<TrainingDto>> GetTrainingsAsync();
+    Task<TrainingDto> CreateTraining(CreateTrainingDto model);
 }

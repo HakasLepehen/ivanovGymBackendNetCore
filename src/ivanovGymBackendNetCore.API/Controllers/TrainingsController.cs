@@ -43,19 +43,13 @@ public class TrainingsController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateTraining()
+    public async Task<IActionResult> CreateTraining([FromBody] CreateTrainingDto dto)
     {
         try
         {
-            using var reader = new StreamReader(Request.Body);
-            string body = await reader.ReadToEndAsync();
+            TrainingDto res = await _trainingService.CreateTraining(dto);
 
-            var model = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
-
-
-            _logger.LogInformation("Тело запроса CreateTraining: {Body}", body);
-
-            return Ok();
+            return Ok(dto);
         }
         catch (Exception ex)
         {
