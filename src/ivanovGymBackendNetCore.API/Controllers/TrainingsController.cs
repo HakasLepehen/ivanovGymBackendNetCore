@@ -47,13 +47,29 @@ public class TrainingsController : ControllerBase
     {
         try
         {
-            TrainingDto res = await _trainingService.CreateTraining(dto);
+            TrainingDto res = await _trainingService.CreateTrainingAsync(dto);
 
             return Ok(res);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Не удалось создать тренировку");
+            return BadRequest(ex);
+        }
+    }
+
+    [Authorize]
+    [HttpDelete(":id")]
+    public async Task<IActionResult> DeleteTraining(int id)
+    {
+        try
+        {
+            await _trainingService.DeleteTrainingAsync(id);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Не удалось удалить тренировку");
             return BadRequest(ex);
         }
     }

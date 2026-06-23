@@ -29,10 +29,22 @@ public class TrainingService : ITrainingService
         return trainingDtos;
     }
 
-    public async Task<TrainingDto> CreateTraining(CreateTrainingDto model)
+    public async Task<TrainingDto> CreateTrainingAsync(CreateTrainingDto model)
     {
         Training dto = _mapper.Map<Training>(model);
         var training = await _trainingRepository.CreateAsync(dto);
         return _mapper.Map<TrainingDto>(training);
+    }
+
+    public async Task DeleteTrainingAsync(int id)
+    {
+        try
+        {
+            await _trainingRepository.DeleteAsync(id);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Не удалось удалить тренировку с идентификатором {id}", ex);
+        }
     }
 }
