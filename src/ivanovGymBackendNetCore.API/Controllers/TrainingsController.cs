@@ -59,7 +59,7 @@ public class TrainingsController : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete(":id")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTraining(int id)
     {
         try
