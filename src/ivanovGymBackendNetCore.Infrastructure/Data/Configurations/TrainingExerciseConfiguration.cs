@@ -14,5 +14,27 @@ class TrainingExerciseConfiguration : IEntityTypeConfiguration<TrainingExercise>
         builder.ToTable("training_exercises");
 
         builder.HasKey(t => t.Id);
+        builder.Property(t => t.Id)
+            .UseIdentityByDefaultColumn();
+
+        builder.Property(t => t.ExecutionNumber)
+            .HasColumnName("execution_number")
+            .HasColumnType("smallint")
+            .HasDefaultValue(0);
+
+        builder.Property(t => t.SetCount)
+            .HasColumnType("text")
+            .HasColumnName("set_count")
+            .HasDefaultValue("");
+
+        builder.Property(t => t.PayloadWeight)
+            .HasColumnType("text")
+            .HasColumnName("payload_weight")
+            .HasDefaultValue("");
+
+        builder.Property(t => t.Comment)
+            .HasColumnType("text")
+            .HasColumnName("comment")
+            .HasDefaultValue("");
     }
 }
