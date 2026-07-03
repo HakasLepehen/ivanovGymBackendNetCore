@@ -15,6 +15,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     public DbSet<Client> Clients { get; set; }
     public DbSet<Exercise> Exercises { get; set; }
     public DbSet<Training> Trainings { get; set; }
+    public DbSet<TrainingExercise> TrainingExercises { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
