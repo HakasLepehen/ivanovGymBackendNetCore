@@ -37,4 +37,14 @@ public class TrainingExercise
     /// Комментарий к выполняемому упражнению
     /// </summary>
     public string? Comment { get; set; } = "";
+
+    /// <summary>
+    /// Связанное упражнение
+    /// </summary>
+    public Exercise Exercise { get; set; }
+
+    /// <summary>
+    /// Связанная тренировка
+    /// </summary>
+    public Training Training { get; set; }
 }

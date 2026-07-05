@@ -36,5 +36,27 @@ class TrainingExerciseConfiguration : IEntityTypeConfiguration<TrainingExercise>
             .HasColumnType("text")
             .HasColumnName("comment")
             .HasDefaultValue("");
+
+        builder.Property(t => t.ExerciseId)
+            .HasColumnType("int")
+            .HasColumnName("exercise_id")
+            .IsRequired();
+
+        builder.Property(c => c.TrainingId)
+            .HasColumnType("int")
+            .HasColumnName("training_id")
+            .IsRequired();
+
+        builder.HasOne(e => e.Exercise)
+            .WithOne()
+            .HasForeignKey<TrainingExercise>(e => e.ExerciseId)
+            .HasPrincipalKey<Exercise>(t => t.Id)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(e => e.Training)
+            .WithOne()
+            .HasForeignKey<TrainingExercise>(e => e.TrainingId)
+            .HasPrincipalKey<Training>(t => t.Id)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
