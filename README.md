@@ -59,7 +59,7 @@ dotnet ef migrations add MigrationName --project src/ivanovGymBackendNetCore.Inf
 
 **Пример:**
 ```bash
-dotnet ef migrations add AddTrainingsTable --project src/ivanovGymBackendNetCore.Infrastructure --startup-project src/ivanovGymBackendNetCore.API
+dotnet ef migrations add AddTrainingExercise --project src/ivanovGymBackendNetCore.Infrastructure --startup-project src/ivanovGymBackendNetCore.API
 ```
 
 ### Применение миграций к базе данных
