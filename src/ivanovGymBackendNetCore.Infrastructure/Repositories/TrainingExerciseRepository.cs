@@ -17,4 +17,13 @@ class TrainingExerciseRepository : ITrainingExerciseRepository
     {
         return await _context.TrainingExercises.ToListAsync();
     }
+
+    public async Task<List<TrainingExercise>> GetAllByTrainingIdAsync(int id)
+    {
+        var trainings = await _context.TrainingExercises
+            .Where(o => o.TrainingId == id)
+            .ToListAsync();
+
+        return trainings;
+    }
 }

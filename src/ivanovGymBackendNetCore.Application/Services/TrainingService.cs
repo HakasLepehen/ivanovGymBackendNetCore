@@ -29,6 +29,20 @@ public class TrainingService : ITrainingService
         return trainingDtos;
     }
 
+    public async Task<TrainingDto> GetTrainingAsync(int id)
+    {
+        try
+        {
+            var training = await _trainingRepository.GetByIdAsync(id);
+            var trainingDto = _mapper.Map<TrainingDto>(training);
+            return trainingDto;
+        }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
+    }
+
     public async Task<TrainingDto> CreateTrainingAsync(CreateTrainingDto model)
     {
         Training dto = _mapper.Map<Training>(model);

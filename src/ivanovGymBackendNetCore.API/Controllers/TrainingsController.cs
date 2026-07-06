@@ -41,6 +41,26 @@ public class TrainingsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Получение конкретной тренировки тренировок
+    /// </summary>
+    /// <returns></returns>
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetTraining(int id)
+    {
+        try
+        {
+            TrainingDto res = await _trainingService.GetTrainingAsync(id);
+            return Ok(res);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Не удалось получить список тренировок");
+            return BadRequest(ex);
+        }
+    }
+
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateTraining([FromBody] CreateTrainingDto dto)
@@ -70,6 +90,20 @@ public class TrainingsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Не удалось удалить тренировку");
+            return BadRequest(ex);
+        }
+    }
+
+    [Authorize]
+    [HttpPost("{id}")]
+    public IActionResult UpdateTraining([FromBody] TrainingDto dto)
+    {
+        try
+        {
+            return Ok();
+        }
+        catch (Exception ex)
+        {
             return BadRequest(ex);
         }
     }

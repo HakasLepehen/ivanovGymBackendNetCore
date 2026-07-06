@@ -19,7 +19,8 @@ class TrainingExerciseConfiguration : IEntityTypeConfiguration<TrainingExercise>
 
         builder.Property(t => t.ExecutionNumber)
             .HasColumnName("execution_number")
-            .HasColumnType("smallint");
+            .HasColumnType("text")
+            .HasDefaultValue("");
 
         builder.Property(t => t.SetCount)
             .HasColumnType("text")
