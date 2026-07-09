@@ -31,16 +31,14 @@ public class TrainingService : ITrainingService
 
     public async Task<TrainingDto> GetTrainingAsync(int id)
     {
-        try
+        var training = await _trainingRepository.GetByIdAsync(id);
+        if (training == null)
         {
-            var training = await _trainingRepository.GetByIdAsync(id);
-            var trainingDto = _mapper.Map<TrainingDto>(training);
-            return trainingDto;
+            throw new Exception($"Тренировка с {id} не найдена");
         }
-        catch(Exception ex)
-        {
-            throw ex;
-        }
+        var trainingDto = _mapper.Map<TrainingDto>(training);
+        
+        return trainingDto;
     }
 
     public async Task<TrainingDto> CreateTrainingAsync(CreateTrainingDto model)
