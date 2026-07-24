@@ -4,6 +4,7 @@ using ivanovGymBackendNetCore.Application.Interfaces;
 using ivanovGymBackendNetCore.Domain.Entities;
 using ivanovGymBackendNetCore.Domain.Interfaces;
 using ivanovGymBackendNetCore.Infrastructure.Data;
+using Microsoft.AspNetCore.Mvc;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
@@ -37,7 +38,7 @@ public class TrainingService : ITrainingService
             throw new Exception($"Тренировка с {id} не найдена");
         }
         var trainingDto = _mapper.Map<TrainingDto>(training);
-        
+
         return trainingDto;
     }
 
@@ -57,6 +58,22 @@ public class TrainingService : ITrainingService
         catch (Exception ex)
         {
             throw new Exception("Не удалось удалить тренировку с идентификатором {id}", ex);
+        }
+    }
+
+    public async Task UpdateTrainingAsync(int id, TrainingDto dto)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            Training updatingTraining = _mapper.Map<Training>(dto);
+            await _trainingRepository.UpdateAsync(id, updatingTraining);
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw new Exception("Не удалось сохранить изменения в тренировке", ex);
         }
     }
 }

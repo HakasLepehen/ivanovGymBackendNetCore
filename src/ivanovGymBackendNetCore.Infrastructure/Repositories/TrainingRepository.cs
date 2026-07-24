@@ -52,12 +52,15 @@ public class TrainingRepository : ITrainingRepository
 
         return targetTraining;
     }
-    public async Task UpdateAsync(Training model)
+    public async Task UpdateAsync(int id, Training model)
     {
-        var targetTraining = await _context.Trainings.FindAsync(model.Id);
+        var targetTraining = await _context.Trainings.FindAsync(id);
 
         if (targetTraining == null)
             throw new Exception("Указанная тренировка не найдена");
+
+        targetTraining.ClientGuid = model.ClientGuid;
+        targetTraining.PlannedDate = model.PlannedDate;
 
         _context.Trainings.Update(targetTraining);
         await _context.SaveChangesAsync();

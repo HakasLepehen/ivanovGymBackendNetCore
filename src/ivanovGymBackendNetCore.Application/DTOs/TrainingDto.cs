@@ -28,5 +28,5 @@ public class TrainingDto
     // <summary>
     // Список упражнений привязанных к 
     // </summary>
-    public List<TrainingExerciseDto>? exercises { get; set; } = new List<TrainingExerciseDto>();
+    public List<TrainingExerciseDto>? Exercises { get; set; } = new List<TrainingExerciseDto>();
 }

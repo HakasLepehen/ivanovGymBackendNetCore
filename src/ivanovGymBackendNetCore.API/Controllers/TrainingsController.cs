@@ -90,21 +90,22 @@ public class TrainingsController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Не удалось удалить тренировку");
-            return BadRequest(ex);
+            return BadRequest(new {error = ex.Message});
         }
     }
 
     [Authorize]
-    [HttpPost("{id}")]
-    public IActionResult UpdateTraining([FromBody] TrainingDto dto)
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateTraining(int id, [FromBody] TrainingDto dto)
     {
         try
         {
+            await _trainingService.UpdateTrainingAsync(id, dto);
             return Ok();
         }
         catch (Exception ex)
         {
-            return BadRequest(ex);
+            return BadRequest(new {error = ex.Message});
         }
     }
 }

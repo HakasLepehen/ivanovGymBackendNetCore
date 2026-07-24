@@ -8,4 +8,6 @@ public interface ITrainingService
     Task<TrainingDto> GetTrainingAsync(int id);
     Task<TrainingDto> CreateTrainingAsync(CreateTrainingDto model);
     Task DeleteTrainingAsync(int id);
+
+    Task UpdateTrainingAsync(int id, TrainingDto model);
 }
