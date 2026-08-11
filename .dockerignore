@@ -1,0 +1,13 @@
+**/.git
+**/.gitignore
+**/.vs
+**/.vscode
+**/bin
+**/obj
+**/*.user
+**/*.suo
+**/.DS_Store
+**/node_modules
+**.dockerignore
+README.md
+LICENSE
