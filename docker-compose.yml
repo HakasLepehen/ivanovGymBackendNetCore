@@ -1,17 +1,21 @@
 services:
   postgres:
     image: postgres:16
-    container_name: netcorepostgres
     environment:
       POSTGRES_DB: myapp
       POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      # Пароль монтируется как Docker secret, а не хранится в репозитории.
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
     ports:
-      - "5432:5432"
+      # Доступен локальным инструментам, но не открыт во внешнюю сеть.
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    secrets:
+      - postgres_password
     networks:
       - app-network
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U myuser -d myapp"]
       interval: 10s
@@ -22,21 +26,68 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: netcoreapi
     ports:
-      - "8080:8080"
+      # Внешний TLS-прокси должен направлять трафик на этот локальный HTTP-порт.
+      - "127.0.0.1:8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=myapp;Username=myuser;Password=mypassword
+      # Program.cs добавляет пароль, прочитанный из смонтированного secret.
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=myapp;Username=myuser
+    secrets:
+      - postgres_password
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - app-network
+    restart: unless-stopped
+
+  postgres-backup:
+    image: postgres:16
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: myapp
+      PGUSER: myuser
+      BACKUP_RETENTION_DAYS: "7"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        # Ошибка дампа останавливает контейнер, чтобы restart-политика повторила попытку.
+        while true; do
+          timestamp="$$(date -u +%Y%m%dT%H%M%SZ)"
+          export PGPASSWORD="$$(cat /run/secrets/postgres_password)"
+          pg_dump --format=custom --no-owner --no-privileges --file="/backups/myapp-$${timestamp}.dump"
+          unset PGPASSWORD
+          find /backups -type f -name '*.dump' -mtime +"$${BACKUP_RETENTION_DAYS}" -delete
+          sleep 86400
+        done
+    volumes:
+      - postgres_backups:/backups
+    secrets:
+      - postgres_password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
 
 volumes:
+  # Внешние тома переживают `docker compose down -v`; их нужно создать заранее.
   postgres_data:
+    external: true
+    name: postgres_data
+  postgres_backups:
+    external: true
+    name: postgres_backups
 
 networks:
   app-network:
     driver: bridge
+
+secrets:
+  # Файл создаётся локально или deployment runner из GitHub Secrets.
+  postgres_password:
+    file: ./.secrets/postgres_password
