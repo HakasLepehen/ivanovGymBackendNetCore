@@ -140,3 +140,5 @@ $RECYCLE.BIN/
 # Docker
 #docker-compose.yml
 #.dockerignore
+# Runtime secrets Compose не должны попадать в систему контроля версий.
+.secrets/

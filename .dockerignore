@@ -11,3 +11,5 @@
 **.dockerignore
 README.md
 LICENSE
+# Runtime secrets Compose нельзя передавать в контекст сборки Docker.
+.secrets
