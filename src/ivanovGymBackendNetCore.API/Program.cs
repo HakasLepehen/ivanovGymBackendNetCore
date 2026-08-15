@@ -59,14 +59,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configure CORS
+// Configure CORS - allow requests from any origin
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.SetIsOriginAllowed(_ => true)
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
