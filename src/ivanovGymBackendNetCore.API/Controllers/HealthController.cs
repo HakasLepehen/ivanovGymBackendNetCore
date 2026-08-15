@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ivanovGymBackendNetCore.API.Controllers;
 
 [ApiController]
-[Route("")]
+[Route("api")]
 [AllowAnonymous]
 public class HealthController : ControllerBase
 {
