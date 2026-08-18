@@ -40,4 +40,4 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name == 'push' }}
-          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:{{sha}}
