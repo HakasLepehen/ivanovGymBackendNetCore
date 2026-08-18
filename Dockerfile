@@ -18,7 +18,7 @@ RUN dotnet publish -c Release -o /app/publish --no-restore
 # ---- Migrations stage ----
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS migrations
 WORKDIR /src
-COPY --from=build /src .
+COPY --from=build /src/src .
 RUN dotnet tool install --global dotnet-ef
 
 # ---- Runtime stage ----
@@ -30,7 +30,7 @@ COPY --from=build /app/publish .
 
 # Copy source and EF tools for migrations
 COPY --from=migrations /root/.dotnet/tools /root/.dotnet/tools
-COPY --from=migrations /src .
+COPY --from=migrations /src/src /app/src
 
 # Copy entrypoint script
 COPY entrypoint.sh /app/entrypoint.sh

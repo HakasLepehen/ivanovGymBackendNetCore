@@ -16,8 +16,8 @@ fi
 
 echo "Applying migrations..."
 dotnet ef database update \
-  --project /app/ivanovGymBackendNetCore.Infrastructure \
-  --startup-project /app/ivanovGymBackendNetCore.API
+  --project /app/src/ivanovGymBackendNetCore.Infrastructure \
+  --startup-project /app/src/ivanovGymBackendNetCore.API
 
 echo "Migrations applied. Starting API..."
 exec dotnet /app/ivanovGymBackendNetCore.API.dll
