@@ -18,7 +18,7 @@ RUN dotnet publish -c Release -o /app/publish --no-restore
 # ---- Migrations stage ----
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS migrations
 WORKDIR /src
-COPY --from=build /src/src .
+COPY --from=build /src .
 RUN dotnet tool install --global dotnet-ef
 
 # ---- Runtime stage ----
