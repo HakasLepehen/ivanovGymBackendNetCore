@@ -15,9 +15,11 @@ else
 fi
 
 echo "Applying migrations..."
-dotnet ef database update \
-  --project /app/src/ivanovGymBackendNetCore.Infrastructure \
-  --startup-project /app/src/ivanovGymBackendNetCore.API
+if [ -n "$DB_PASSWORD" ]; then
+    /app/efbundle --connection "$ConnectionStrings__DefaultConnection"
+else
+    /app/efbundle
+fi
 
 echo "Migrations applied. Starting API..."
 exec dotnet /app/ivanovGymBackendNetCore.API.dll

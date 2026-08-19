@@ -137,6 +137,9 @@ $RECYCLE.BIN/
 # Mac files
 .DS_Store
 
+# C# Dev Kit language service cache
+**/*.lscache
+
 # Docker
 #docker-compose.yml
 #.dockerignore
