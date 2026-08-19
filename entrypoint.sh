@@ -11,15 +11,12 @@ fi
 if [ -n "$DB_PASSWORD" ]; then
     export ConnectionStrings__DefaultConnection="Host=postgres;Port=5432;Database=myapp;Username=myuser;Password=$DB_PASSWORD"
 else
-    echo "WARNING: No database password found. Using appsettings.json connection string."
+    echo "ERROR: No database password found. Create .secrets/postgres_password or pass a password secret, and restart with 'docker compose up -d'."
+    exit 1
 fi
 
 echo "Applying migrations..."
-if [ -n "$DB_PASSWORD" ]; then
-    /app/efbundle --connection "$ConnectionStrings__DefaultConnection"
-else
-    /app/efbundle
-fi
+/app/efbundle --connection "$ConnectionStrings__DefaultConnection"
 
 echo "Migrations applied. Starting API..."
 exec dotnet /app/ivanovGymBackendNetCore.API.dll
