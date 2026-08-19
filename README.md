@@ -26,24 +26,36 @@ ivanovGymBackendNetCore/
 │       │   └── Configurations/
 │       └── Repositories/
 ├── .vscode/
-├── docker-compose.yml
+├── docker-compose.yml     # только PostgreSQL для локальной разработки
+├── Dockerfile             # production-образ API (собирается в GitHub Actions)
 └── ivanovGymBackendNetCore.slnx
 ```
 
 ## Требования
 
-- .NET 8.0 или выше
+- .NET 10.0
 - Docker (для запуска PostgreSQL)
 
-## Настройка базы данных
+## Локальная разработка
 
-Запуск PostgreSQL в Docker контейнере:
+`docker-compose.yml` поднимает **только** контейнер с PostgreSQL. Пароль по умолчанию
+совпадает с `appsettings.Development.json`; при желании его можно переопределить через
+`.env`-файл (`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`).
 
 ```bash
-docker-compose up -d
+docker compose up -d   # старт PostgreSQL на порту 5432
+docker compose down    # остановка (данные сохраняются в томе postgres_data)
 ```
 
-Это запустит PostgreSQL на порту 5432.
+API запускается вне Docker, как обычное .NET-приложение:
+
+```bash
+dotnet run --project src/ivanovGymBackendNetCore.API
+# или с автопересборкой:
+dotnet watch run --project src/ivanovGymBackendNetCore.API
+```
+
+API доступно по адресу http://localhost:5000, Swagger — http://localhost:5000/swagger.
 
 ## Работа с миграциями Entity Framework Core
 
@@ -107,6 +119,26 @@ API будет доступно по адресу: http://localhost:5000
 ### Swagger UI
 
 После запуска откройте браузер по адресу: http://localhost:5000/swagger
+
+## Production (VPS)
+
+Образ API собирается в GitHub Actions (`.github/workflows/docker.yml`) при пуше в `master`
+и публикуется в Docker Hub с тегами `latest` и коротким SHA коммита.
+
+На VPS используется собственный `docker-compose.yml`, который берёт готовый образ из
+Docker Hub, — сам репозиторий его не содержит. В GitHub репозитории необходимо настроить
+секреты:
+
+- `DOCKERHUB_USERNAME` — логин Docker Hub (используется и в имени образа);
+- `DOCKERHUB_TOKEN` — токен доступа Docker Hub (не пароль).
+
+Имя образа: `docker.io/<DOCKERHUB_USERNAME>/ivanov-gym-api`. Для деплоя на VPS достаточно
+указать в его compose `image: <DOCKERHUB_USERNAME>/ivanov-gym-api:latest` (или конкретный
+SHA-тег для воспроизводимости).
+
+Контейнер API ожидает пароль БД либо в Docker secret `/run/secrets/postgres_password`,
+либо в строке подключения `ConnectionStrings:DefaultConnection` (см. `entrypoint.sh` и
+`Program.cs`).
 
 ## API Endpoints
 
