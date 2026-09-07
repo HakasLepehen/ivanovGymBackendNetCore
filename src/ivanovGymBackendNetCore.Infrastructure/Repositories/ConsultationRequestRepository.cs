@@ -14,8 +14,35 @@ public class ConsultationRequestRepository : IConsultationRequestRepository
         _context = context;
     }
 
-    public Task CompleteAsync(int id) => throw new NotImplementedException();
-    public Task CreateRequestAsync(ConsultationRequest model) => throw new NotImplementedException();
-    public Task DeleteAsync(int id) => throw new NotImplementedException();
-    public Task<List<ConsultationRequest>> GetAllAsync() => throw new NotImplementedException();
+    public async Task CompleteAsync(int id)
+    {
+        var consultationRequest = await _context.ConsultationRequests.FindAsync(id);
+
+        if (consultationRequest == null)
+            throw new Exception("Запрос на консультацию не найден");
+        
+        consultationRequest.IsCalled = true;
+        await _context.SaveChangesAsync();
+    }
+    public async Task<ConsultationRequest> CreateRequestAsync(ConsultationRequest model)
+    {
+        await _context.ConsultationRequests.AddAsync(model);
+        await _context.SaveChangesAsync();
+        return model;
+    }
+    public async Task DeleteAsync(int id)
+    {
+        var consultationRequest = await _context.ConsultationRequests.FindAsync(id);
+
+        if (consultationRequest == null)
+            throw new Exception("Запрос на консультацию не найден");
+
+        _context.ConsultationRequests.Remove(consultationRequest);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<ConsultationRequest>> GetAllAsync()
+    {
+        return await _context.ConsultationRequests.ToListAsync();
+    }
 }

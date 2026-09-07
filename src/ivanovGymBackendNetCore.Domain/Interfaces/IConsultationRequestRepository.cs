@@ -15,7 +15,7 @@ namespace ivanovGymBackendNetCore.Domain.Interfaces
         /// <param name="id">Идентификатор запроса с сайта</param>
         /// <returns></returns>
         Task CompleteAsync(int id);
-        Task CreateRequestAsync(ConsultationRequest model);
+        Task<ConsultationRequest> CreateRequestAsync(ConsultationRequest model);
         Task DeleteAsync(int id);
     }
 }

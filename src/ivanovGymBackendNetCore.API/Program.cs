@@ -8,6 +8,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string devPolicy = "allowedDevCORSConfig";
+string prodPolicy = "allowedProdCORSConfig";
 const string databasePasswordSecretPath = "/run/secrets/postgres_password";
 if (File.Exists(databasePasswordSecretPath))
 {
@@ -59,16 +61,36 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configure CORS - allow requests from any origin
+// Configure CORS - allow requests from specific origins
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.SetIsOriginAllowed(_ => true)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.AddPolicy(prodPolicy, policy => policy
+            .WithOrigins(
+                "https://app.omni-fit.ru",
+                "https://omni-fit.ru",
+                "https://www.omni-fit.ru",
+                "http://app.omni-fit.ru",
+                "http://omni-fit.ru",
+                "http://www.omni-fit.ru"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+    );
+
+    options.AddPolicy(devPolicy, policy => policy
+            .WithOrigins(
+                "https://localhost",
+                "http://localhost",
+                "https://localhost:5173",
+                "http://localhost:5173",
+                "https://localhost:5174",
+                "http://localhost:5174"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+        );
 });
 
 // Configure Swagger with JWT Bearer authentication
@@ -84,9 +106,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(devPolicy);
+}
+else
+{
+    app.UseCors(prodPolicy);
 }
 
-app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
