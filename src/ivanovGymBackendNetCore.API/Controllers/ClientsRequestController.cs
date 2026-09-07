@@ -37,8 +37,8 @@ namespace ivanovGymBackendNetCore.API.Controllers
         {
             try
             {
-                int id = await consultationService.CreateRequest(dto);
-                return Ok(id);
+                await consultationService.CreateRequest(dto);
+                return Ok();
             }
             catch (Exception ex)
             {

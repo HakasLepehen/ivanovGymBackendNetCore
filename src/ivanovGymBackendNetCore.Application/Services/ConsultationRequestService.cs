@@ -26,12 +26,20 @@ namespace ivanovGymBackendNetCore.Application.Services
             return _mapper.Map<List<ConsultationRequestDto>>(requests);
         }
 
-        public async Task<int> CreateRequest(CreateConsultationRequestDto dto)
+        public async Task CreateRequest(CreateConsultationRequestDto dto)
         {
-            var model = _mapper.Map<ConsultationRequest>(dto);
-            ConsultationRequest result = await _repository.CreateRequestAsync(model);
+            ConsultationRequestDto model = new ConsultationRequestDto()
+            {
+                Name = dto.Name,
+                Phone = dto.Phone,
+                IsCalled = false
+            };
 
-            return result.Id;
+            ConsultationRequest creatingModel = _mapper.Map<ConsultationRequest>(model);
+
+            // var model = _mapper.Map<ConsultationRequest>(dto);
+            // ConsultationRequest result = await _repository.CreateRequestAsync(creatingModel);
+            await _repository.CreateRequestAsync(creatingModel);
         }
     }
 }

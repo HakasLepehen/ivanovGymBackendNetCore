@@ -24,11 +24,10 @@ public class ConsultationRequestRepository : IConsultationRequestRepository
         consultationRequest.IsCalled = true;
         await _context.SaveChangesAsync();
     }
-    public async Task<ConsultationRequest> CreateRequestAsync(ConsultationRequest model)
+    public async Task CreateRequestAsync(ConsultationRequest model)
     {
         await _context.ConsultationRequests.AddAsync(model);
         await _context.SaveChangesAsync();
-        return model;
     }
     public async Task DeleteAsync(int id)
     {
