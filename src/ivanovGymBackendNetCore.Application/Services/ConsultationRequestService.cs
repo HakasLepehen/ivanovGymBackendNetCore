@@ -28,18 +28,24 @@ namespace ivanovGymBackendNetCore.Application.Services
 
         public async Task CreateRequest(CreateConsultationRequestDto dto)
         {
-            ConsultationRequestDto model = new ConsultationRequestDto()
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto));
+
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new ArgumentException("Имя не может быть пустым", nameof(dto.Name));
+
+            if (string.IsNullOrWhiteSpace(dto.Phone))
+                throw new ArgumentException("Телефон не может быть пустым", nameof(dto.Phone));
+
+            try
             {
-                Name = dto.Name,
-                Phone = dto.Phone,
-                IsCalled = false
-            };
-
-            ConsultationRequest creatingModel = _mapper.Map<ConsultationRequest>(model);
-
-            // var model = _mapper.Map<ConsultationRequest>(dto);
-            // ConsultationRequest result = await _repository.CreateRequestAsync(creatingModel);
-            await _repository.CreateRequestAsync(creatingModel);
+                ConsultationRequest creatingModel = _mapper.Map<ConsultationRequest>(dto);
+                await _repository.CreateRequestAsync(creatingModel);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Ошибка при создании запроса на консультацию", ex);
+            }
         }
     }
 }
