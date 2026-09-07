@@ -9,10 +9,11 @@ namespace ivanovGymBackendNetCore.API.Controllers
     [Route("api/[controller]")]
     public class ClientsRequestController : ControllerBase
     {
-        private readonly IConsultationRequestService consultationService;
+        private readonly IConsultationRequestService _consultationService;
         private readonly ILogger<ClientsRequestController> _logger;
-        public ClientsRequestController(ILogger<ClientsRequestController> logger)
+        public ClientsRequestController(IConsultationRequestService consultationService, ILogger<ClientsRequestController> logger)
         {
+            _consultationService = consultationService;
             _logger = logger;
         }
 
@@ -21,7 +22,7 @@ namespace ivanovGymBackendNetCore.API.Controllers
         {
             try
             {
-                var requests = await consultationService.GetRequests();
+                var requests = await _consultationService.GetRequests();
                 return Ok(requests);
             }
             catch (Exception ex)
@@ -37,7 +38,7 @@ namespace ivanovGymBackendNetCore.API.Controllers
         {
             try
             {
-                await consultationService.CreateRequest(dto);
+                await _consultationService.CreateRequest(dto);
                 return Ok();
             }
             catch (Exception ex)
