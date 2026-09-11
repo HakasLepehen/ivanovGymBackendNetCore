@@ -22,5 +22,9 @@ public class MappingProfile : Profile
         CreateMap<TrainingDto, Training>();
         CreateMap<TrainingExercise, TrainingExerciseDto>();
         CreateMap<TrainingExerciseDto, TrainingExercise>();
+        CreateMap<CreateConsultationRequestDto, ConsultationRequest>();
+        CreateMap<ConsultationRequest, CreateConsultationRequestDto>();
+        CreateMap<ConsultationRequestDto, ConsultationRequest>();
+        CreateMap<ConsultationRequest, ConsultationRequestDto>();
     }
 }
