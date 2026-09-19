@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ivanovGymBackendNetCore.Infrastructure.Repositories;
 
-public class ConsultationRequestRepository : IConsultationRequestRepository
+public class ConsultationRequestsRepository : IConsultationRequestsRepository
 {
     
     private readonly AppDbContext _context;
-    public ConsultationRequestRepository(AppDbContext context)
+    public ConsultationRequestsRepository(AppDbContext context)
     {
         _context = context;
     }

@@ -6,7 +6,7 @@ using ivanovGymBackendNetCore.Domain.Entities;
 
 namespace ivanovGymBackendNetCore.Domain.Interfaces
 {
-    public interface IConsultationRequestRepository
+    public interface IConsultationRequestsRepository
     {
         Task<List<ConsultationRequest>> GetAllAsync();
         /// <summary>

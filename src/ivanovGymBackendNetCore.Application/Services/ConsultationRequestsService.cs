@@ -10,12 +10,12 @@ using ivanovGymBackendNetCore.Domain.Interfaces;
 
 namespace ivanovGymBackendNetCore.Application.Services
 {
-    public class ConsultationRequestService : IConsultationRequestService
+    public class ConsultationRequestsService : IConsultationRequestsService
     {
-        private readonly IConsultationRequestRepository _repository;
+        private readonly IConsultationRequestsRepository _repository;
         private readonly IMapper _mapper;
 
-        public ConsultationRequestService(IConsultationRequestRepository repository, IMapper mapper)
+        public ConsultationRequestsService(IConsultationRequestsRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

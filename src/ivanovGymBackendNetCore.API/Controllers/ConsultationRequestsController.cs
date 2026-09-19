@@ -7,11 +7,11 @@ namespace ivanovGymBackendNetCore.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ClientsRequestController : ControllerBase
+    public class ConsultationRequestsController : ControllerBase
     {
-        private readonly IConsultationRequestService _consultationService;
-        private readonly ILogger<ClientsRequestController> _logger;
-        public ClientsRequestController(IConsultationRequestService consultationService, ILogger<ClientsRequestController> logger)
+        private readonly IConsultationRequestsService _consultationService;
+        private readonly ILogger<ConsultationRequestsController> _logger;
+        public ConsultationRequestsController(IConsultationRequestsService consultationService, ILogger<ConsultationRequestsController> logger)
         {
             _consultationService = consultationService;
             _logger = logger;
