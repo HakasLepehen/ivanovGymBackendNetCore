@@ -58,6 +58,7 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 Entities/
  BaseEntity.cs
  Client.cs
+ ConsultationRequest.cs
  Exercise.cs
  Member.cs
  Training.cs
@@ -66,6 +67,7 @@ Entities/
 Enums/UserRole.cs
 Interfaces/
  IClientRepository.cs
+ IConsultationRequestsRepository.cs
  IExerciseRepository.cs
  IMemberRepository.cs
  ITrainingExerciseRepository.cs

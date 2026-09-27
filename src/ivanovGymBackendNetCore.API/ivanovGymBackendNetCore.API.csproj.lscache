@@ -59,6 +59,7 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 Controllers/
  AuthController.cs
  ClientController.cs
+ ConsultationRequestsController.cs
  ExerciseController.cs
  HealthController.cs
  MembersController.cs

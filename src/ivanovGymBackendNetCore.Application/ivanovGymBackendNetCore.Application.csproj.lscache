@@ -58,7 +58,9 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 DTOs/
  AuthDtos.cs
  ClientDto.cs
+ ConsultationRequestDto.cs
  CreateClientDto.cs
+ CreateConsultationRequestDto.cs
  CreateExerciseDto.cs
  CreateTrainingDto.cs
  CreateUserDto.cs
@@ -69,6 +71,7 @@ DTOs/
 Interfaces/
  IAuthService.cs
  IClientService.cs
+ IConsultationRequestsService.cs
  IExerciseService.cs
  IMemberService.cs
  ITrainingExerciseService.cs
@@ -81,6 +84,7 @@ Profiles/MappingProfile.cs
 Services/
  AuthService.cs
  ClientService.cs
+ ConsultationRequestsService.cs
  ExerciseService.cs
  MemberService.cs
  TrainingExerciseService.cs
