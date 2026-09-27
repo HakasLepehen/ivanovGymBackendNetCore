@@ -29,19 +29,19 @@ public class ConsultationRequestsRepository : IConsultationRequestsRepository
         await _context.ConsultationRequests.AddAsync(model);
         await _context.SaveChangesAsync();
     }
-    public async Task DeleteAsync(int id)
+    public async Task CompleteRequestAsync(int id)
     {
-        var consultationRequest = await _context.ConsultationRequests.FindAsync(id);
+        ConsultationRequest request = await _context.ConsultationRequests.FindAsync(id);
 
-        if (consultationRequest == null)
+        if (request == null)
             throw new Exception("Запрос на консультацию не найден");
 
-        _context.ConsultationRequests.Remove(consultationRequest);
+        request.IsCalled = true;
         await _context.SaveChangesAsync();
     }
 
     /// <summary>
-    /// Полностью очистить таблицу запросов с сайта одной операцией.
+    /// Очистить таблицу запросов с сайта не помеченных флагом обзвона.
     /// </summary>
     public async Task<List<ConsultationRequest>> RemoveUnansweredRequestsFromDB(bool resetIdentity = true, CancellationToken cancellationToken = default)
     {

@@ -7,5 +7,6 @@ namespace ivanovGymBackendNetCore.Application.Interfaces
         Task<List<ConsultationRequestDto>> GetRequests();
         Task CreateRequest(CreateConsultationRequestDto dto);
         Task<List<ConsultationRequestDto>> RemoveUnansweredRequests(CancellationToken cancellationToken = default);
+        Task CompleteRequest(int id);
     }
 }

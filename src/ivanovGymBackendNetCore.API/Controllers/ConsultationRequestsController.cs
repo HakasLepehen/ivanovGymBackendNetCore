@@ -64,5 +64,20 @@ namespace ivanovGymBackendNetCore.API.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
+        [HttpPut("completeRequest/{id}")]
+        public async Task<IActionResult> CompleteRequest(int id)
+        {
+            try
+            {
+                await _consultationService.CompleteRequest(id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не удалось завершить запрос на консультацию");
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }

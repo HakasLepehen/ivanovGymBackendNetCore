@@ -50,5 +50,9 @@ namespace ivanovGymBackendNetCore.Application.Services
 
         public async Task<List<ConsultationRequestDto>> RemoveUnansweredRequests(CancellationToken cancellationToken = default)
             => _mapper.Map<List<ConsultationRequestDto>>(await _repository.RemoveUnansweredRequestsFromDB(resetIdentity: true, cancellationToken: cancellationToken));
+
+        public async Task CompleteRequest(int id)
+            => await _repository.CompleteAsync(id);
+        
     }
 }

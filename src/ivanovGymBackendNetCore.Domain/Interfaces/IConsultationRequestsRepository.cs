@@ -17,7 +17,6 @@ namespace ivanovGymBackendNetCore.Domain.Interfaces
         /// <returns></returns>
         Task CompleteAsync(int id);
         Task CreateRequestAsync(ConsultationRequest model);
-        Task DeleteAsync(int id);
         /// <summary>
         /// Очистить запросов с сайта по которым не было обратной связи
         /// </summary>
