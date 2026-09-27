@@ -10,12 +10,12 @@ using ivanovGymBackendNetCore.Domain.Interfaces;
 
 namespace ivanovGymBackendNetCore.Application.Services
 {
-    public class ConsultationRequestService : IConsultationRequestService
+    public class ConsultationRequestsService : IConsultationRequestsService
     {
-        private readonly IConsultationRequestRepository _repository;
+        private readonly IConsultationRequestsRepository _repository;
         private readonly IMapper _mapper;
 
-        public ConsultationRequestService(IConsultationRequestRepository repository, IMapper mapper)
+        public ConsultationRequestsService(IConsultationRequestsRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -47,5 +47,12 @@ namespace ivanovGymBackendNetCore.Application.Services
                 throw new InvalidOperationException("Ошибка при создании запроса на консультацию", ex);
             }
         }
+
+        public async Task<List<ConsultationRequestDto>> RemoveUnansweredRequests(CancellationToken cancellationToken = default)
+            => _mapper.Map<List<ConsultationRequestDto>>(await _repository.RemoveUnansweredRequestsFromDB(resetIdentity: true, cancellationToken: cancellationToken));
+
+        public async Task CompleteRequest(int id)
+            => await _repository.CompleteAsync(id);
+        
     }
 }

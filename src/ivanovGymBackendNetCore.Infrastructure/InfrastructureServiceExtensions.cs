@@ -36,7 +36,7 @@ public static class InfrastructureServiceExtensions
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
         services.AddScoped<ITrainingRepository, TrainingRepository>();
         services.AddScoped<ITrainingExerciseRepository, TrainingExerciseRepository>();
-        services.AddScoped<IConsultationRequestRepository, ConsultationRequestRepository>();
+        services.AddScoped<IConsultationRequestsRepository, ConsultationRequestsRepository>();
 
         return services;
     }

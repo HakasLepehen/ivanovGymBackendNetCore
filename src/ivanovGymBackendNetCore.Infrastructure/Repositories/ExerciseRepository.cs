@@ -22,7 +22,7 @@ public class ExerciseRepository : IExerciseRepository
     public async Task DeleteAsync(int id)
     {
         var exercise = await _context.Exercises.FindAsync(id)
-            ?? throw new Exception("Упражнение с идентификатором {{id}}");
+            ?? throw new Exception($"Упражнение с идентификатором {id}");
 
         _context.Exercises.Remove(exercise);
         await _context.SaveChangesAsync();
