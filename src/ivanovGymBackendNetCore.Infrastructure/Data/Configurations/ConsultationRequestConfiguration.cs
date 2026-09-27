@@ -13,6 +13,7 @@ public class ConsultationRequestConfiguration : IEntityTypeConfiguration<Consult
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.Id)
+            .HasColumnName("id")
             .ValueGeneratedOnAdd();
 
         builder.Property(c => c.Name)

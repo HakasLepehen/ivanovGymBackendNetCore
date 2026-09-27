@@ -47,5 +47,8 @@ namespace ivanovGymBackendNetCore.Application.Services
                 throw new InvalidOperationException("Ошибка при создании запроса на консультацию", ex);
             }
         }
+
+        public async Task<List<ConsultationRequestDto>> RemoveUnansweredRequests(CancellationToken cancellationToken = default)
+            => _mapper.Map<List<ConsultationRequestDto>>(await _repository.RemoveUnansweredRequestsFromDB(resetIdentity: true, cancellationToken: cancellationToken));
     }
 }

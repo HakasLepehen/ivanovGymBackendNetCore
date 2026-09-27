@@ -98,6 +98,8 @@ Migrations/
  20260706062030_changedIntToTextInTrExEntity.Designer.cs
  20260820154135_CreatedClientRequestFromSite.cs
  20260820154135_CreatedClientRequestFromSite.Designer.cs
+ 20260926085245_SetColNameToIdInConsultationReqeustsTable.cs
+ 20260926085245_SetColNameToIdInConsultationReqeustsTable.Designer.cs
  AppDbContextModelSnapshot.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs

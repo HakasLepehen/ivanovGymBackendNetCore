@@ -7,6 +7,7 @@ namespace ivanovGymBackendNetCore.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ConsultationRequestsController : ControllerBase
     {
         private readonly IConsultationRequestsService _consultationService;
@@ -40,6 +41,22 @@ namespace ivanovGymBackendNetCore.API.Controllers
             {
                 await _consultationService.CreateRequest(dto);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не удалось создать запрос на консультацию");
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveAllRequests()
+        {
+            try
+            {
+                List<ConsultationRequestDto> requests = await _consultationService.RemoveUnansweredRequests();
+
+                return Ok(requests);
             }
             catch (Exception ex)
             {
