@@ -8,7 +8,7 @@ namespace ivanovGymBackendNetCore.Application.DTOs;
 
 public class TrainingExerciseDto
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     /// <summary>
     /// Идентификатор связанной тренировки
