@@ -52,9 +52,37 @@ class TrainingExerciseRepository : ITrainingExerciseRepository
         var targetModel = await _context.TrainingExercises.FindAsync(model.Id);
 
         if (targetModel == null)
-            throw new Exception("Указанная тренировка не найдена");
+            throw new Exception("Указанное упражнение тренировки не найдено");
 
-        _context.TrainingExercises.Update(targetModel);
+        // targetModel уже отслеживается контекстом, поэтому меняем свойства
+        // прямо в нём: присваивание targetModel = model и Update(model)
+        // привело бы к попытке отследить второй экземпляр с тем же ключом.
+        targetModel.TrainingId = model.TrainingId;
+        targetModel.ExerciseId = model.ExerciseId;
+        targetModel.SetCount = model.SetCount;
+        targetModel.ExecutionNumber = model.ExecutionNumber;
+        targetModel.PayloadWeight = model.PayloadWeight;
+        targetModel.Comment = model.Comment;
+
         await _context.SaveChangesAsync();
+    }
+    /// <summary>
+    /// Поиск выполнений упражнения. Если executionNumber задан — только
+    /// с таким же количеством повторений, иначе — все выполнения упражнения.
+    /// </summary>
+    public async Task<List<TrainingExercise>> FindLastExerciseAsync(int exerciseId, string? executionNumber, Guid client)
+    {
+        IQueryable<TrainingExercise> query = _context.TrainingExercises
+            .AsNoTracking()
+            .Where(e => e.Training.ClientGuid == client)
+            .Include(o => o.Training)
+            .Where(e => e.ExerciseId == exerciseId);
+
+        if (!string.IsNullOrWhiteSpace(executionNumber))
+        {
+            query = query.Where(e => e.ExecutionNumber == executionNumber);
+        }
+
+        return await query.ToListAsync();
     }
 }

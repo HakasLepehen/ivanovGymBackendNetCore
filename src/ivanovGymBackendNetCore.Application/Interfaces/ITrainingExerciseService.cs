@@ -8,4 +8,5 @@ public interface ITrainingExerciseService
     Task<TrainingExerciseDto> CreateTrainingExerciseAsync(TrainingExerciseDto dto);
     Task DeleteTrainingExerciseAsync(int id);
     Task UpdateTrainingExerciseAsync(TrainingExerciseDto dto);
-}
+    Task<TrainingExerciseDto> FindLastExerciseAsync(int id, LastExerciseDto dto);
+};

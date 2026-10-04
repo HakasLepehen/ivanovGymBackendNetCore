@@ -105,6 +105,7 @@ public class TrainingsController : ControllerBase
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Ошибка обновления тренировки {Id}", id);
             return BadRequest(new {error = ex.Message});
         }
     }

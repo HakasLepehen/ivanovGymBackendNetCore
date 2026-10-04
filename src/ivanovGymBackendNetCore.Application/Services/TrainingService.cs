@@ -41,6 +41,10 @@ public class TrainingService : ITrainingService
         }
         var trainingDto = _mapper.Map<TrainingDto>(training);
 
+        // Получаем коллекцию связанных упражнений
+        List<TrainingExerciseDto> exerciseDtos = _mapper.Map<List<TrainingExerciseDto>>(await _trainingExerciseRepository.GetAllByTrainingIdAsync(id));
+        trainingDto.Exercises = exerciseDtos;
+        
         return trainingDto;
     }
 
@@ -94,7 +98,7 @@ public class TrainingService : ITrainingService
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new Exception("Не удалось сохранить изменения в тренировке", ex);
+            throw;
         }
     }
 }

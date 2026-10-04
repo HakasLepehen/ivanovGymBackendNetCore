@@ -67,6 +67,7 @@ DTOs/
  CreateTrainingDto.cs
  CreateUserDto.cs
  ExerciseDto.cs
+ LastExerciseDto.cs
  MemberDto.cs
  TrainingDto.cs
  TrainingExerciseDto.cs

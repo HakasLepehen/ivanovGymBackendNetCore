@@ -41,7 +41,7 @@ class TrainingExerciseService : ITrainingExerciseService
     }
 
     /// <summary>
-    /// Создать тренировку
+    /// Создать упражнение в тренировке
     /// </summary>
     /// <param name="dto">Модель упражнения как часть тренировки</param>
     /// <returns>Сохраненное дто упражнения</returns>
@@ -66,5 +66,22 @@ class TrainingExerciseService : ITrainingExerciseService
     {
         TrainingExercise model = _mapper.Map<TrainingExercise>(dto);
         await _trainingExerciseRepository.UpdateExerciseAsync(model);
+    }
+
+    /// <summary>
+    /// Найти последнее исполнения конкретного упражнения по клиенту
+    /// </summary>
+    /// <param name="id">Идентификатор упражнения</param>
+    /// <param name="dto">параметры упражнения</param>
+    /// <returns></returns>
+    public async Task<TrainingExerciseDto> FindLastExerciseAsync(int id, LastExerciseDto dto)
+    {
+        List<TrainingExercise> exercises = await _trainingExerciseRepository.FindLastExerciseAsync(id, dto?.Repetition, dto.Client);
+
+        TrainingExercise? lastExecutionOfExercise = exercises
+            .Where(e => e.Training is not null)
+            .MaxBy(e => e.Training.PlannedDate);
+
+        return _mapper.Map<TrainingExerciseDto>(lastExecutionOfExercise);
     }
 }

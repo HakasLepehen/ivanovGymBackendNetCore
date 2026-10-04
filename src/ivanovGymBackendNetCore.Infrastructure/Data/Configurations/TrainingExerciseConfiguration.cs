@@ -48,15 +48,13 @@ class TrainingExerciseConfiguration : IEntityTypeConfiguration<TrainingExercise>
             .IsRequired();
 
         builder.HasOne(e => e.Exercise)
-            .WithOne()
-            .HasForeignKey<TrainingExercise>(e => e.ExerciseId)
-            .HasPrincipalKey<Exercise>(t => t.Id)
+            .WithMany()
+            .HasForeignKey(e => e.ExerciseId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(e => e.Training)
-            .WithOne()
-            .HasForeignKey<TrainingExercise>(e => e.TrainingId)
-            .HasPrincipalKey<Training>(t => t.Id)
+            .WithMany()
+            .HasForeignKey(e => e.TrainingId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
