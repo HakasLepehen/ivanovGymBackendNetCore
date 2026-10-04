@@ -17,6 +17,15 @@ class TrainingExerciseConfiguration : IEntityTypeConfiguration<TrainingExercise>
         builder.Property(t => t.Id)
             .UseIdentityByDefaultColumn();
 
+        // Значение формируется на стороне PostgreSQL при вставке строки,
+        // поэтому в INSERT свойство участвует только если ему явно
+        // присвоено значение, отличное от default(DateTime)
+        builder.Property(t => t.CreatedAt)
+            .HasColumnName("created_at")
+            .HasColumnType("timestamp with time zone")
+            .HasDefaultValueSql("now()")
+            .ValueGeneratedOnAdd();
+
         builder.Property(t => t.ExecutionNumber)
             .HasColumnName("execution_number")
             .HasColumnType("text")

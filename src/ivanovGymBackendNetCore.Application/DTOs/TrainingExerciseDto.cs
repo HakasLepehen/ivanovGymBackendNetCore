@@ -11,6 +11,13 @@ public class TrainingExerciseDto
     public int? Id { get; set; }
 
     /// <summary>
+    /// Дата и время создания записи.
+    /// Формируется на стороне БД, в запросе клиента игнорируется
+    /// </summary>
+    [JsonPropertyName("created_at")]
+    public DateTime CreatedAt { get; set; }
+
+    /// <summary>
     /// Идентификатор связанной тренировки
     /// </summary>
     [JsonPropertyName("training_id")]
@@ -43,6 +50,6 @@ public class TrainingExerciseDto
     /// <summary>
     /// Комментарий к выполняемому упражнению
     /// </summary>
-    [JsonPropertyName("comment")] 
+    [JsonPropertyName("comment")]
     public string? Comment { get; set; } = "";
 }
