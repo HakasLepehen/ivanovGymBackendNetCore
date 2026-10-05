@@ -62,7 +62,6 @@ Data/
   ClientConfiguration.cs
   ConsultationRequestConfiguration.cs
   ExerciseConfiguration.cs
-  MemberConfiguration.cs
   TrainingConfiguration.cs
   TrainingExerciseConfiguration.cs
   UserConfiguration.cs
@@ -102,6 +101,8 @@ Migrations/
  20260926085245_SetColNameToIdInConsultationReqeustsTable.Designer.cs
  20261001165704_ChangeTrainingExerciseToOneToMany.cs
  20261001165704_ChangeTrainingExerciseToOneToMany.Designer.cs
+ 20261004231340_AddCreatedAtToTrainingExercise.cs
+ 20261004231340_AddCreatedAtToTrainingExercise.Designer.cs
  AppDbContextModelSnapshot.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
@@ -111,7 +112,6 @@ Repositories/
  ClientRepository.cs
  ConsultationRequestsRepository.cs
  ExerciseRepository.cs
- MemberRepository.cs
  TrainingExerciseRepository.cs
  TrainingRepository.cs
 InfrastructureServiceExtensions.cs

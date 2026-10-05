@@ -68,7 +68,6 @@ DTOs/
  CreateUserDto.cs
  ExerciseDto.cs
  LastExerciseDto.cs
- MemberDto.cs
  TrainingDto.cs
  TrainingExerciseDto.cs
 Interfaces/
@@ -76,7 +75,6 @@ Interfaces/
  IClientService.cs
  IConsultationRequestsService.cs
  IExerciseService.cs
- IMemberService.cs
  ITrainingExerciseService.cs
  ITrainingService.cs
 obj/Debug/net10.0/
@@ -89,7 +87,6 @@ Services/
  ClientService.cs
  ConsultationRequestsService.cs
  ExerciseService.cs
- MemberService.cs
  TrainingExerciseService.cs
  TrainingService.cs
 ApplicationServiceExtensions.cs

@@ -1,4 +1,3 @@
-using ivanovGymBackendNetCore.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace ivanovGymBackendNetCore.Domain.Entities;
