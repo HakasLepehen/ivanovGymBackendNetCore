@@ -107,10 +107,21 @@ public class TrainingsController : ControllerBase
     }
 
     [HttpPost("copyTraining/{id}")]
-    public async Task<IActionResult> CopyTraining(int id)
+    public async Task<IActionResult> CopyTraining(int id, [FromBody] TrainingDto dto)
     {
         try
         {
+            CreateTrainingDto creationTraining = new CreateTrainingDto()
+            {
+                ClientGuid = dto.ClientGuid,
+                PlannedDate = dto.PlannedDate,
+            };
+
+            TrainingDto resultTraining = await _trainingService.CreateTrainingAsync(creationTraining);
+
+            await _trainingService.CopyTrainingExercisesAsync((int)resultTraining.Id, dto.Exercises);
+
+
             return Ok();
         }
         catch(Exception ex)

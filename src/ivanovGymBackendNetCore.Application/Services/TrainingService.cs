@@ -44,7 +44,7 @@ public class TrainingService : ITrainingService
         // Получаем коллекцию связанных упражнений
         List<TrainingExerciseDto> exerciseDtos = _mapper.Map<List<TrainingExerciseDto>>(await _trainingExerciseRepository.GetAllByTrainingIdAsync(id));
         trainingDto.Exercises = exerciseDtos;
-        
+
         return trainingDto;
     }
 
@@ -90,6 +90,31 @@ public class TrainingService : ITrainingService
                         TrainingExercise trainingExercise = _mapper.Map<TrainingExercise>(exercise);
                         await _trainingExerciseRepository.UpdateExerciseAsync(trainingExercise);
                     }
+                }
+            }
+
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+    public async Task CopyTrainingExercisesAsync(int id, List<TrainingExerciseDto> exercises)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            // Проверяем есть ли упражнения в списке
+            if (exercises?.Count > 0)
+            {
+                foreach (TrainingExerciseDto exercise in exercises)
+                {
+                    exercise.TrainingId = id;
+                    TrainingExercise trainingExercise = _mapper.Map<TrainingExercise>(exercise);
+                    await _trainingExerciseRepository.CreateExerciseAsync(trainingExercise);
                 }
             }
 
