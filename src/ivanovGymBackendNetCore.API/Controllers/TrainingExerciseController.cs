@@ -7,6 +7,7 @@ namespace ivanovGymBackendNetCore.API.Controllers;
 
 [ApiController]
 [Route("api/training_exercises")]
+[Authorize]
 public class TrainingExerciseController : ControllerBase
 {
     private readonly ILogger<TrainingExerciseController> _logger;
@@ -23,7 +24,6 @@ public class TrainingExerciseController : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор тренировки</param>
     /// <returns>Список упражнений</returns>
-    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTrainingExercises(int id)
     {
@@ -39,18 +39,32 @@ public class TrainingExerciseController : ControllerBase
 
     }
 
-    // пока не используется
-    [Authorize]
-    [HttpPost("{id}")]
-    public async Task<IActionResult> CreateOrUpdateTrainingExersises(int id, [FromBody] List<TrainingExerciseDto> exercises)
-    { 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteTrainingExercise(int id)
+    {
         try
         {
+            await _service.DeleteTrainingExerciseAsync(id);
             return Ok();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            return BadRequest(ex);
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("getLastExercise/{id}")]
+    public async Task<IActionResult> GetLastExercise(int id, [FromBody] LastExerciseDto dto, [FromQuery] bool isRepetition)
+    {
+        try
+        {
+            var res = await _service.FindLastExerciseAsync(id, dto);
+            return Ok(res);
+        }
+        catch (Exception ex)
+        {
+
+            return BadRequest(new { message = ex.Message });
         }
     }
 }

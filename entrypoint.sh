@@ -15,6 +15,16 @@ else
     exit 1
 fi
 
+# JWT signing key: Docker secret has priority over the environment variable.
+if [ -f "/run/secrets/jwt_key" ]; then
+    export JwtSettings__Key=$(cat /run/secrets/jwt_key | tr -d '[:space:]')
+fi
+
+if [ -z "$JwtSettings__Key" ]; then
+    echo "ERROR: No JWT signing key found. Mount it as /run/secrets/jwt_key or pass JwtSettings__Key."
+    exit 1
+fi
+
 echo "Applying migrations..."
 /app/efbundle --connection "$ConnectionStrings__DefaultConnection"
 

@@ -8,9 +8,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Member, MemberDto>();
-        CreateMap<CreateMemberDto, Member>();
-        CreateMap<UpdateMemberDto, Member>();
         CreateMap<CreateClientDto, Client>();
         CreateMap<Client, ClientDto>();
         CreateMap<ClientDto, Client>();
@@ -21,7 +18,10 @@ public class MappingProfile : Profile
         CreateMap<CreateTrainingDto, Training>();
         CreateMap<TrainingDto, Training>();
         CreateMap<TrainingExercise, TrainingExerciseDto>();
-        CreateMap<TrainingExerciseDto, TrainingExercise>();
+        // CreatedAt формируется на стороне БД, поэтому при маппинге из DTO
+        // в сущность свойство намеренно игнорируется
+        CreateMap<TrainingExerciseDto, TrainingExercise>()
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
         CreateMap<CreateConsultationRequestDto, ConsultationRequest>();
         CreateMap<ConsultationRequest, CreateConsultationRequestDto>();
         CreateMap<ConsultationRequestDto, ConsultationRequest>();

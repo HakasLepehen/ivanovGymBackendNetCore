@@ -10,6 +10,7 @@ namespace ivanovGymBackendNetCore.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TrainingsController : ControllerBase
 {
     private readonly ITrainingService _trainingService;
@@ -25,7 +26,6 @@ public class TrainingsController : ControllerBase
     /// Получение списка тренировок
     /// </summary>
     /// <returns></returns>
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetTrainings()
     {
@@ -45,7 +45,6 @@ public class TrainingsController : ControllerBase
     /// Получение конкретной тренировки тренировок
     /// </summary>
     /// <returns></returns>
-    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetTraining(int id)
     {
@@ -61,7 +60,6 @@ public class TrainingsController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateTraining([FromBody] CreateTrainingDto dto)
     {
@@ -78,7 +76,6 @@ public class TrainingsController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteTraining(int id)
     {
@@ -94,7 +91,6 @@ public class TrainingsController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateTraining(int id, [FromBody] TrainingDto dto)
     {
@@ -105,7 +101,33 @@ public class TrainingsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new {error = ex.Message});
+            _logger.LogError(ex, "Ошибка обновления тренировки {Id}", id);
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    [HttpPost("copyTraining/{id}")]
+    public async Task<IActionResult> CopyTraining(int id, [FromBody] TrainingDto dto)
+    {
+        try
+        {
+            CreateTrainingDto creationTraining = new CreateTrainingDto()
+            {
+                ClientGuid = dto.ClientGuid,
+                PlannedDate = dto.PlannedDate,
+            };
+
+            TrainingDto resultTraining = await _trainingService.CreateTrainingAsync(creationTraining);
+
+            await _trainingService.CopyTrainingExercisesAsync((int)resultTraining.Id, dto.Exercises);
+
+
+            return Ok();
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка копирования тренировки {Id}", id);
+            return BadRequest(new { error = ex.Message });
         }
     }
 }

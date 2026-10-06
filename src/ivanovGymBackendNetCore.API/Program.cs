@@ -1,7 +1,9 @@
 using ivanovGymBackendNetCore.Application;
 using ivanovGymBackendNetCore.Domain;
+using ivanovGymBackendNetCore.Domain.Enums;
 using ivanovGymBackendNetCore.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Data.Common;
 using System.Text;
@@ -29,7 +31,6 @@ builder.Services.AddControllers()
     });
 builder.Services.AddResponseCaching();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 // Add application services (Application layer)
 builder.Services.AddApplicationServices();
@@ -38,8 +39,19 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // Configure JWT Authentication
+// Ключ подписи берётся только из конфигурации (JwtSettings__Key либо /run/secrets/jwt_key,
+// который монтирует entrypoint.sh). В репозитории ключа быть не должно.
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 builder.Services.Configure<JwtSettings>(jwtSettings);
+
+string? jwtKey = jwtSettings[nameof(JwtSettings.Key)];
+if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+{
+    throw new InvalidOperationException(
+        "JwtSettings:Key отсутствует или короче 32 символов. Передайте ключ переменной окружения " +
+        "JwtSettings__Key либо файлом /run/secrets/jwt_key. Для локальной разработки: " +
+        "dotnet user-secrets --project src/ivanovGymBackendNetCore.API set \"JwtSettings:Key\"=<ключ-не-короче-32-символов>");
+}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -56,9 +68,25 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
+});
+
+// Ролевая модель. Источник ролей — users."Roles", они попадают в токен клеймом ClaimTypes.Role
+// (см. AuthService.GenerateJwtTokenAsync), поэтому достаточно RequireRole.
+builder.Services.AddAuthorization(options =>
+{
+    // Всё, что не помечено [AllowAnonymous], доступно только аутентифицированным.
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+    // Администратор — суперпользователь.
+    options.AddPolicy(AuthorizationPolicies.AdminOnly, policy => policy.RequireRole(UserRole.Admin));
+
+    // Администратор и тренер: работа с учётными записями пользователей.
+    options.AddPolicy(AuthorizationPolicies.StaffOnly,
+        policy => policy.RequireRole(UserRole.Admin, UserRole.Trainer));
 });
 
 // Configure CORS - allow requests from specific origins
@@ -98,6 +126,26 @@ builder.Services.AddCors(options =>
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo { Title = "Ivanov Gym API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.ParameterLocation.Header,
+        Description = "Access token из POST /api/auth/login. Введите токен без префикса \"Bearer\"."
+    });
+
+    // В Microsoft.OpenApi 2.x требование ссылается на схему через OpenApiSecuritySchemeReference,
+    // а Swashbuckle 10 передаёт документ в фабрике требования.
+    c.AddSecurityRequirement(doc => new Microsoft.OpenApi.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", doc, null!),
+            new List<string>()
+        }
+    });
 });
 
 var app = builder.Build();

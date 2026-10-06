@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ivanovGymBackendNetCore.Infrastructure.Data;
@@ -12,9 +13,11 @@ using ivanovGymBackendNetCore.Infrastructure.Data;
 namespace ivanovGymBackendNetCore.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261001165704_ChangeTrainingExerciseToOneToMany")]
+    partial class ChangeTrainingExerciseToOneToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -307,6 +310,50 @@ namespace ivanovGymBackendNetCore.Infrastructure.Migrations
                     b.ToTable("exercises", (string)null);
                 });
 
+            modelBuilder.Entity("ivanovGymBackendNetCore.Domain.Entities.Member", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("MembershipEndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("MembershipStartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("members", (string)null);
+                });
+
             modelBuilder.Entity("ivanovGymBackendNetCore.Domain.Entities.Training", b =>
                 {
                     b.Property<int>("Id")
@@ -347,12 +394,6 @@ namespace ivanovGymBackendNetCore.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasDefaultValue("")
                         .HasColumnName("comment");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("ExecutionNumber")
                         .ValueGeneratedOnAdd()

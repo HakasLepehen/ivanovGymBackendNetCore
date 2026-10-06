@@ -60,7 +60,6 @@ Entities/
  Client.cs
  ConsultationRequest.cs
  Exercise.cs
- Member.cs
  Training.cs
  TrainingExercise.cs
  User.cs
@@ -69,13 +68,13 @@ Interfaces/
  IClientRepository.cs
  IConsultationRequestsRepository.cs
  IExerciseRepository.cs
- IMemberRepository.cs
  ITrainingExerciseRepository.cs
  ITrainingRepository.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  ivanovGymBackendNetCore.Domain.AssemblyInfo.cs
  ivanovGymBackendNetCore.Domain.GlobalUsings.g.cs
+AuthorizationPolicies.cs
 JwtSettings.cs
 
 [frameworkPacks]

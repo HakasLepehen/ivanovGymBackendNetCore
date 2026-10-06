@@ -62,7 +62,6 @@ Controllers/
  ConsultationRequestsController.cs
  ExerciseController.cs
  HealthController.cs
- MembersController.cs
  TrainingExerciseController.cs
  TrainingsController.cs
 obj/Debug/net10.0/

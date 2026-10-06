@@ -8,6 +8,8 @@ public class TrainingExercise
 {
     public int Id { get; set; }
 
+    public DateTime CreatedAt { get; set; }
+
     /// <summary>
     /// Идентификатор связанной тренировки
     /// </summary>

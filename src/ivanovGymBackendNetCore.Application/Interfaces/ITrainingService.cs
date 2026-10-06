@@ -10,4 +10,5 @@ public interface ITrainingService
     Task DeleteTrainingAsync(int id);
 
     Task UpdateTrainingAsync(int id, TrainingDto model);
+    Task CopyTrainingExercisesAsync(int id, List<TrainingExerciseDto> exercises);
 }
