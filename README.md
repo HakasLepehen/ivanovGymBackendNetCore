@@ -47,6 +47,21 @@ docker compose up -d   # старт PostgreSQL на порту 5432
 docker compose down    # остановка (данные сохраняются в томе postgres_data)
 ```
 
+### Ключ подписи JWT
+
+Ключ подписи не хранится в репозитории и обязателен: без него приложение не стартует
+(и `dotnet ef` тоже, так как использует конфигурацию API-проекта). Локально ключ хранится
+в user-secrets (файл вне репозитория):
+
+```bash
+dotnet user-secrets --project src/ivanovGymBackendNetCore.API set "JwtSettings:Key"=<ключ-не-короче-32-символов>
+dotnet user-secrets --project src/ivanovGymBackendNetCore.API list
+```
+
+Генерация ключа: `openssl rand -base64 48 | tr -d '/+=' | cut -c1-48`
+
+### Запуск API
+
 API запускается вне Docker, как обычное .NET-приложение:
 
 ```bash
@@ -140,37 +155,86 @@ SHA-тег для воспроизводимости).
 либо в строке подключения `ConnectionStrings:DefaultConnection` (см. `entrypoint.sh` и
 `Program.cs`).
 
+Ключ подписи JWT также обязателен и в образ не входит: `entrypoint.sh` читает его из
+`/run/secrets/jwt_key` либо из переменной окружения `JwtSettings__Key` и завершает запуск
+с ошибкой, если ключа нет или он короче 32 символов.
+
+## Роли и доступ
+
+Три роли: `admin`, `trainer`, `user`. Источник ролей — колонка `users."Roles"` (`text[]`),
+именно она попадает в JWT клеймом `ClaimTypes.Role`; таблицы Identity (`AspNetRoles`,
+`AspNetUserRoles`) в приложении не используются. Константы ролей и email администратора —
+`src/ivanovGymBackendNetCore.Domain/Enums/UserRole.cs`, имена политик —
+`src/ivanovGymBackendNetCore.Domain/AuthorizationPolicies.cs`.
+
+**Роль определяется только на сервере.** Поле `role` в теле `signup` принимается, только если
+запрос сделан аутентифицированным администратором; иначе возвращается 403. Публичная
+регистрация всегда создаёт роль `user`.
+
+| Возможность | admin | trainer | user |
+|---|---|---|---|
+| Зарегистрировать учётную запись ролью `user` | ✅ | ❌ | ✅ (публично) |
+| Зарегистрировать учётную запись ролью `trainer` | ✅ | ❌ | ❌ |
+| Стать администратором | только зарегистрировав `UserRole.AdminEmail`, пока админа нет | ❌ | ❌ |
+| Сбросить пароль чужой учётной записи | ✅ любая | ✅ только роль `user` | ❌ |
+| Сменить собственный пароль (со знанием текущего) | ✅ | ✅ | ✅ |
+| Прочие эндпоинты API | по существующим `[Authorize]` | | |
+
+Администратор — суперпользователь. Email администратора задан константой
+`UserRole.AdminEmail` и **должен быть заменён на реальный перед деплоем**: в исходном коде
+он открыт, поэтому повторная выдача роли `admin` заблокирована — если администратор уже
+существует, регистрация с этим email отклоняется.
+
+Все эндпоинты по умолчанию требуют аутентификацию (`FallbackPolicy`), открытые помечены
+`[AllowAnonymous]` (`signup`, `login`, `POST /api/consultationRequests`, `GET /api`).
+Побочный эффект fallback-политики: несуществующий маршрут без токена возвращает 401, а не 404.
+
+### Роль на фронтенде
+
+Источник роли для клиента — ответы `POST /api/auth/login` и `GET /api/auth/me`
+(`roles: string[]`). Разбирать JWT на клиенте не нужно: клеймы уходят полными URI-именами
+(`http://schemas.microsoft.com/ws/2008/06/identity/claims/role`), а роль в токене
+не обновляется до истечения срока (`JwtSettings:ExpiryMinutes`), то есть после смены роли
+нужен новый вход.
+
 ## API Endpoints
 
-### Members (Члены клуба)
+### Auth (`/api/auth`)
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | http://localhost:5000/api/members | Получить всех членов |
-| GET | http://localhost:5000/api/members/{id} | Получить члена по ID |
-| POST | http://localhost:5000/api/members | Создать нового члена |
-| PUT | http://localhost:5000/api/members/{id} | Обновить члена |
-| DELETE | http://localhost:5000/api/members/{id} | Удалить члена |
+| Method | Endpoint | Доступ | Description |
+|--------|----------|--------|-------------|
+| POST | `/api/auth/signup` | все (роль — только админ) | Создать учётную запись, опционально с ролью |
+| POST | `/api/auth/login` | все | Вход, возвращает токен и `roles` |
+| GET | `/api/auth/me` | аутентифицированные | Email, `userId`, `roles` |
+| POST | `/api/auth/change-password` | аутентифицированные | Смена собственного пароля (нужен текущий) |
+| POST | `/api/auth/reset-password` | admin, trainer | Сброс пароля другой учётной записи без текущего |
 
 ### Примеры запросов
 
-#### Создать члена клуба
+#### Публичная регистрация (всегда роль `user`)
 
 ```bash
-curl -X POST http://localhost:5000/api/members \
+curl -X POST http://localhost:5000/api/auth/signup \
   -H "Content-Type: application/json" \
-  -d '{
-    "name": "Иван Иванов",
-    "email": "ivan@example.com",
-    "phone": "+79001234567",
-    "membershipStartDate": "2024-01-01"
-  }'
+  -d '{"email": "ivan@example.com", "password": "secret123"}'
 ```
 
-#### Получить всех членов
+#### Администратор регистрирует тренера
 
 ```bash
-curl http://localhost:5000/api/members
+curl -X POST http://localhost:5000/api/auth/signup \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <токен администратора>" \
+  -d '{"email": "trainer@example.com", "password": "secret123", "role": "trainer"}'
+```
+
+#### Сброс пароля пользователя (тренеру доступны только пользователи)
+
+```bash
+curl -X POST http://localhost:5000/api/auth/reset-password \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <токен администратора или тренера>" \
+  -d '{"userId": "<guid пользователя>", "newPassword": "newsecret123"}'
 ```
 
 ## Архитектура

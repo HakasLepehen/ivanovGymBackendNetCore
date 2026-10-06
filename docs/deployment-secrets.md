@@ -25,6 +25,39 @@ services:
 
 Либо смонтировать secret в `/run/secrets/postgres_password`.
 
+## Ключ подписи JWT
+
+Ключ подписи токенов в репозитории отсутствует (`JwtSettings:Key` в `appsettings.json` пуст),
+а без него приложение не запускается. `entrypoint.sh` берёт ключ в таком порядке:
+
+1. Docker secret `/run/secrets/jwt_key` (пробельные символы удаляются);
+2. переменная окружения `JwtSettings__Key`.
+
+Если ни того, ни другого нет, контейнер завершается с ошибкой. То же требование действует для
+`dotnet ef`: конфигурация API-проекта читается и в design-time, поэтому локально нужен
+user-secrets (см. README).
+
+```yaml
+services:
+  api:
+    image: your-dockerhub-user/ivanov-gym-api:latest
+    secrets:
+      - postgres_password
+      - jwt_key
+
+secrets:
+  postgres_password:
+    file: ./secrets/postgres_password
+  jwt_key:
+    file: ./secrets/jwt_key
+```
+
+Длина ключа — не меньше 32 символов. Генерация:
+`openssl rand -base64 48 | tr -d '/+=' | cut -c1-48`.
+
+Смена ключа делает все выданные токены недействительными: пользователи будут перелогинены.
+Ротация обязательна, если предыдущее значение где-то засвечено.
+
 ## GitHub Actions
 
 Workflow `.github/workflows/docker.yml` только собирает и публикует образ в

@@ -13,12 +13,14 @@ namespace ivanovGymBackendNetCore.Application.Services;
 public class TrainingService : ITrainingService
 {
     private readonly ITrainingRepository _trainingRepository;
+    private readonly ITrainingExerciseRepository _trainingExerciseRepository;
     private readonly IMapper _mapper;
     private readonly AppDbContext _context;
 
-    public TrainingService(ITrainingRepository trainingRepository, IMapper mapper, AppDbContext context)
+    public TrainingService(ITrainingRepository trainingRepository, ITrainingExerciseRepository trainingExerciseRepository, IMapper mapper, AppDbContext context)
     {
         _trainingRepository = trainingRepository;
+        _trainingExerciseRepository = trainingExerciseRepository;
         _mapper = mapper;
         _context = context;
     }
@@ -38,6 +40,10 @@ public class TrainingService : ITrainingService
             throw new Exception($"Тренировка с {id} не найдена");
         }
         var trainingDto = _mapper.Map<TrainingDto>(training);
+
+        // Получаем коллекцию связанных упражнений
+        List<TrainingExerciseDto> exerciseDtos = _mapper.Map<List<TrainingExerciseDto>>(await _trainingExerciseRepository.GetAllByTrainingIdAsync(id));
+        trainingDto.Exercises = exerciseDtos;
 
         return trainingDto;
     }
@@ -68,12 +74,56 @@ public class TrainingService : ITrainingService
         {
             Training updatingTraining = _mapper.Map<Training>(dto);
             await _trainingRepository.UpdateAsync(id, updatingTraining);
+
+            // Проверяем есть ли упражнения в списке
+            if (dto.Exercises?.Count > 0)
+            {
+                foreach (TrainingExerciseDto exercise in dto.Exercises)
+                {
+                    if (exercise.Id == null)
+                    {
+                        TrainingExercise trainingExercise = _mapper.Map<TrainingExercise>(exercise);
+                        await _trainingExerciseRepository.CreateExerciseAsync(trainingExercise);
+                    }
+                    else
+                    {
+                        TrainingExercise trainingExercise = _mapper.Map<TrainingExercise>(exercise);
+                        await _trainingExerciseRepository.UpdateExerciseAsync(trainingExercise);
+                    }
+                }
+            }
+
             await transaction.CommitAsync();
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            throw new Exception("Не удалось сохранить изменения в тренировке", ex);
+            throw;
+        }
+    }
+
+    public async Task CopyTrainingExercisesAsync(int id, List<TrainingExerciseDto> exercises)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        try
+        {
+            // Проверяем есть ли упражнения в списке
+            if (exercises?.Count > 0)
+            {
+                foreach (TrainingExerciseDto exercise in exercises)
+                {
+                    exercise.TrainingId = id;
+                    TrainingExercise trainingExercise = _mapper.Map<TrainingExercise>(exercise);
+                    await _trainingExerciseRepository.CreateExerciseAsync(trainingExercise);
+                }
+            }
+
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            throw;
         }
     }
 }

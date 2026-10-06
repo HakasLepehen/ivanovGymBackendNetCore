@@ -31,7 +31,6 @@ public static class InfrastructureServiceExtensions
         .AddEntityFrameworkStores<AppDbContext>()
         .AddDefaultTokenProviders();
 
-        services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IClientRepository, ClientRepository>();
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
         services.AddScoped<ITrainingRepository, TrainingRepository>();
