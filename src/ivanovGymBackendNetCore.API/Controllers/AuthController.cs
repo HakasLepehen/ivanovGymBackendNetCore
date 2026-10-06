@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
+using ivanovGymBackendNetCore.Domain;
+using ivanovGymBackendNetCore.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,9 +24,11 @@ public class AuthController : ControllerBase
   }
 
   /// <summary>
-  /// Регистрация нового пользователя
+  /// Регистрация нового пользователя. Публичная регистрация всегда создаёт роль «user».
+  /// Роль можно передать только запросом аутентифицированного администратора.
   /// </summary>
   [HttpPost("signup")]
+  [AllowAnonymous]
   public async Task<IActionResult> SignUp([FromBody] RegisterDto model)
   {
     try
@@ -34,7 +38,21 @@ public class AuthController : ControllerBase
         return BadRequest(new { error = "Email and password are required" });
       }
 
-      string token = await _authService.SignUpAsync(model.Email, model.Password);
+      // Роль никогда не принимается из запроса напрямую: иначе любой мог бы зарегистрировать
+      // себе администратора одним полем в теле.
+      string? requestedRole = null;
+      if (!string.IsNullOrWhiteSpace(model.Role))
+      {
+        if (!User.IsInRole(UserRole.Admin))
+        {
+          return StatusCode(StatusCodes.Status403Forbidden,
+              new { error = "Назначать роль при регистрации может только администратор" });
+        }
+
+        requestedRole = model.Role;
+      }
+
+      string token = await _authService.SignUpAsync(model.Email, model.Password, requestedRole);
       return Ok(new { token, message = "Пользователь успешно зарегистрирован" });
     }
     catch (Exception ex)
@@ -48,6 +66,7 @@ public class AuthController : ControllerBase
   /// Вход пользователя
   /// </summary>
   [HttpPost("login")]
+  [AllowAnonymous]
   public async Task<IActionResult> Login([FromBody] LoginDto model)
   {
     try
@@ -68,14 +87,72 @@ public class AuthController : ControllerBase
   }
 
   /// <summary>
-  /// Получение информации о текущем пользователе
+  /// Смена собственного пароля. Доступна аутентифицированному пользователю любой роли,
+  /// работает только для него самого — идентификатор берётся из токена.
+  /// </summary>
+  [HttpPost("change-password")]
+  [Authorize]
+  public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
+  {
+    if (string.IsNullOrWhiteSpace(model.OldPassword) || string.IsNullOrWhiteSpace(model.NewPassword))
+    {
+      return BadRequest(new { error = "Текущий и новый пароль обязательны" });
+    }
+
+    if (!Guid.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out Guid userId))
+    {
+      return Unauthorized(new { error = "В токене отсутствует идентификатор пользователя" });
+    }
+
+    try
+    {
+      await _authService.ChangeOwnPasswordAsync(userId, model.OldPassword, model.NewPassword);
+      return Ok(new { message = "Пароль изменён" });
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError(ex, "Password change failed for user: {UserId}", userId);
+      return BadRequest(new { error = ex.Message });
+    }
+  }
+
+  /// <summary>
+  /// Сброс пароля другой учётной записи без текущего пароля.
+  /// Администратор — любую учётную запись, тренер — только роль «user».
+  /// </summary>
+  [HttpPost("reset-password")]
+  [Authorize(Policy = AuthorizationPolicies.StaffOnly)]
+  public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto model)
+  {
+    if (string.IsNullOrWhiteSpace(model.NewPassword))
+    {
+      return BadRequest(new { error = "Новый пароль обязателен" });
+    }
+
+    bool callerIsAdmin = User.IsInRole(UserRole.Admin);
+
+    try
+    {
+      await _authService.ResetPasswordAsync(model.UserId, model.NewPassword, targetMustBeUser: !callerIsAdmin);
+      return Ok(new { message = "Пароль сброшен" });
+    }
+    catch (Exception ex)
+    {
+      _logger.LogError(ex, "Password reset failed for user: {UserId}", model.UserId);
+      return BadRequest(new { error = ex.Message });
+    }
+  }
+
+  /// <summary>
+  /// Получение информации о текущем пользователе. Источник ролей для фронтенда — этот ответ
+  /// и ответ login; JWT разбирать на клиенте не требуется.
   /// </summary>
   [HttpGet("me")]
   [Authorize]
   public IActionResult GetCurrentUser()
   {
-    string email = User.FindFirst(ClaimTypes.Email)?.Value;
-    string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    string? email = User.FindFirst(ClaimTypes.Email)?.Value;
+    string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToList();
 
     return Ok(new

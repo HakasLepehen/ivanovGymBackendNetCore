@@ -7,8 +7,10 @@ using ivanovGymBackendNetCore.Application.DTOs;
 using ivanovGymBackendNetCore.Application.Interfaces;
 using ivanovGymBackendNetCore.Domain;
 using ivanovGymBackendNetCore.Domain.Entities;
+using ivanovGymBackendNetCore.Domain.Enums;
 using ivanovGymBackendNetCore.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -34,14 +36,19 @@ public class AuthService : IAuthService
         _clientService = clientService;
     }
 
-    public async Task<string> SignUpAsync(string email, string password)
+    public async Task<string> SignUpAsync(string email, string password, string? requestedRole = null)
     {
         string normalizedEmail = email.Trim();
+        string role = await ResolveRoleAsync(normalizedEmail, requestedRole);
+
         var user = new User
         {
             UserName = normalizedEmail,
             Email = normalizedEmail,
-            EmailConfirmed = true
+            EmailConfirmed = true,
+            // Роль задаётся до CreateAsync, чтобы роль была известна уже в этом INSERT
+            // и не требовалась вторая запись в users."Roles".
+            Roles = new[] { role }
         };
 
         var result = await _userManager.CreateAsync(user, password);
@@ -99,6 +106,97 @@ public class AuthService : IAuthService
             Email = user.Email!,
             Roles = user.Roles
         };
+    }
+
+    public async Task ChangeOwnPasswordAsync(Guid userId, string oldPassword, string newPassword)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString())
+            ?? throw new Exception("Пользователь не найден");
+
+        var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+        if (!result.Succeeded)
+        {
+            string errors = string.Join("; ", result.Errors.Select(e => e.Description));
+            throw new Exception($"Не удалось сменить пароль: {errors}");
+        }
+
+        _logger.LogInformation("Пользователь {UserId} сменил пароль", userId);
+    }
+
+    public async Task ResetPasswordAsync(Guid targetUserId, string newPassword, bool targetMustBeUser)
+    {
+        var user = await _userManager.FindByIdAsync(targetUserId.ToString())
+            ?? throw new Exception("Пользователь не найден");
+
+        if (targetMustBeUser && !user.Roles.Contains(UserRole.User))
+        {
+            throw new Exception("Тренер может сбрасывать пароль только учётной записи пользователя");
+        }
+
+        // Сброс выполняется без старого пароля, поэтому новый пароль проверяется до удаления
+        // текущего: иначе при отказе валидации пользователь остался бы без пароля вовсе.
+        await ValidateNewPasswordAsync(user, newPassword);
+
+        var removed = await _userManager.RemovePasswordAsync(user);
+        if (!removed.Succeeded)
+        {
+            string errors = string.Join("; ", removed.Errors.Select(e => e.Description));
+            throw new Exception($"Не удалось сбросить пароль: {errors}");
+        }
+
+        var added = await _userManager.AddPasswordAsync(user, newPassword);
+        if (!added.Succeeded)
+        {
+            string errors = string.Join("; ", added.Errors.Select(e => e.Description));
+            throw new Exception($"Старый пароль удалён, а новый установлен не был: {errors}");
+        }
+
+        _logger.LogInformation("Пользователю {UserId} сброшен пароль", targetUserId);
+    }
+
+    /// <summary>
+    /// Вычисление роли для новой учётной записи. Роль никогда не берётся из запроса напрямую.
+    /// </summary>
+    private async Task<string> ResolveRoleAsync(string email, string? requestedRole)
+    {
+        if (UserRole.IsAdminEmail(email))
+        {
+            // Email администратора открыт в исходном коде, а регистрация доступна из интернета,
+            // поэтому защита от повторной выдачи роли обязательна.
+            bool adminExists = await _userManager.Users.AnyAsync(u => u.Roles.Contains(UserRole.Admin));
+            if (adminExists)
+            {
+                throw new Exception("Учётная запись администратора уже зарегистрирована");
+            }
+
+            return UserRole.Admin;
+        }
+
+        if (string.IsNullOrWhiteSpace(requestedRole))
+        {
+            return UserRole.User;
+        }
+
+        if (!UserRole.IsAssignableByAdmin(requestedRole))
+        {
+            throw new Exception($"Роль \"{requestedRole}\" нельзя назначить при регистрации");
+        }
+
+        return requestedRole.Trim().ToLowerInvariant();
+    }
+
+    private async Task ValidateNewPasswordAsync(User user, string newPassword)
+    {
+        foreach (var validator in _userManager.PasswordValidators)
+        {
+            var result = await validator.ValidateAsync(_userManager, user, newPassword);
+            if (!result.Succeeded)
+            {
+                string errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                throw new Exception($"Новый пароль не принят: {errors}");
+            }
+        }
     }
 
     private async Task<string> GenerateJwtTokenAsync(User user)

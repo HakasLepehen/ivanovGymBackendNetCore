@@ -103,6 +103,8 @@ Migrations/
  20261001165704_ChangeTrainingExerciseToOneToMany.Designer.cs
  20261004231340_AddCreatedAtToTrainingExercise.cs
  20261004231340_AddCreatedAtToTrainingExercise.Designer.cs
+ 20261005015947_RemovedMembersTable.cs
+ 20261005015947_RemovedMembersTable.Designer.cs
  AppDbContextModelSnapshot.cs
 obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs

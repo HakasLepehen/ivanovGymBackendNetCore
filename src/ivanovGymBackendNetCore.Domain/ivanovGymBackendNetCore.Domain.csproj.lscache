@@ -76,6 +76,7 @@ obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  ivanovGymBackendNetCore.Domain.AssemblyInfo.cs
  ivanovGymBackendNetCore.Domain.GlobalUsings.g.cs
+AuthorizationPolicies.cs
 JwtSettings.cs
 
 [frameworkPacks]
