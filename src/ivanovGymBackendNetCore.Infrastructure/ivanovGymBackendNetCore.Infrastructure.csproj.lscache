@@ -114,6 +114,7 @@ Repositories/
  ExerciseRepository.cs
  TrainingExerciseRepository.cs
  TrainingRepository.cs
+DesignTimeDbContextFactory.cs
 InfrastructureServiceExtensions.cs
 
 [frameworkPacks]

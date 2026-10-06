@@ -52,6 +52,8 @@ TemporaryDependencyNodeTargetIdentifier=net10.0
 /utf8output
 /deterministic+
 /langversion:14.0
+/skipanalyzers+
+/features:run-nullable-analysis=never
 /features:use-roslyn-tokenizer=true
 /warnaserror+:NU1605,SYSLIB0011
 
@@ -68,6 +70,7 @@ obj/Debug/net10.0/
  .NETCoreApp,Version=v10.0.AssemblyAttributes.cs
  ivanovGymBackendNetCore.API.AssemblyInfo.cs
  ivanovGymBackendNetCore.API.GlobalUsings.g.cs
+ ivanovGymBackendNetCore.API.MvcApplicationPartsAssemblyInfo.cs
 Program.cs
 
 [frameworkPacks]
