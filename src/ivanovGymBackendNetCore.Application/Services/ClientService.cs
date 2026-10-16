@@ -35,6 +35,8 @@ public class ClientService : IClientService
     {
         var client = _mapper.Map<Client>(dto);
         client.IsActive = true;
+        // Надо подумать включить ли это поле в форму создания или спросить у Сергея как ему удобно будет?
+        // client.IsOffline = true;
 
         var createdClient = await _clientRepository.CreateAsync(client);
         return _mapper.Map<ClientDto>(createdClient);

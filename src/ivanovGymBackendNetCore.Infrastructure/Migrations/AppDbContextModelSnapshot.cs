@@ -208,7 +208,13 @@ namespace ivanovGymBackendNetCore.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true)
-                        .HasColumnName("isActive");
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsOffline")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_offline");
 
                     b.PrimitiveCollection<List<short>>("Limits")
                         .HasColumnType("smallint[]");

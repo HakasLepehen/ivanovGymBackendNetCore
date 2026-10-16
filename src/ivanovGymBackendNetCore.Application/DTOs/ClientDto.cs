@@ -16,4 +16,8 @@ public class ClientDto
     public Guid Guid { get; set; }
     public List<short>? Limits { get; set; }
     public bool IsActive { get; set; }
+    /// <summary>
+    /// Клиент проходит занятия в зале под присмотром тренера или самостоятельно
+    /// </summary>
+    public bool IsOffline { get; set; } = true;
 }

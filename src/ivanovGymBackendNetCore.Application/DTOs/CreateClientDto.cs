@@ -14,4 +14,5 @@ public class CreateClientDto
     public Guid Guid { get; set; }
     public List<short>? Limits { get; set; }
     public bool IsActive { get; set; } = true;
+    public bool IsOffline { get; set; }
 }

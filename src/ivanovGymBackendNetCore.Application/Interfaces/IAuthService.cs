@@ -9,7 +9,7 @@ public interface IAuthService
     /// <see cref="Domain.Enums.UserRole.AdminEmail"/>, requestedRole принимает участие, только если
     /// её разрешил вызывающий (контроллер проверяет роль администратора).
     /// </summary>
-    Task<string> SignUpAsync(string email, string password, string? requestedRole = null);
+    Task<string> SignUpAsync(RegisterDto dto, string? requestedRole = null);
 
     Task<AuthResultDto> SignInAsync(string email, string password);
 

@@ -68,8 +68,14 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
             .HasColumnType("smallint[]");
 
         builder.Property(c => c.IsActive)
-            .HasColumnName("isActive")
+            .HasColumnName("is_active")
+            .HasColumnType("boolean")
             .HasDefaultValue(true)
             .IsRequired();
+
+        builder.Property(c => c.IsOffline)
+            .HasColumnName("is_offline")
+            .HasColumnType("boolean")
+            .HasDefaultValue(true);
     }
 }

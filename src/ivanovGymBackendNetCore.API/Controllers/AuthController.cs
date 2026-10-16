@@ -52,7 +52,7 @@ public class AuthController : ControllerBase
         requestedRole = model.Role;
       }
 
-      string token = await _authService.SignUpAsync(model.Email, model.Password, requestedRole);
+      string token = await _authService.SignUpAsync(model, requestedRole);
       return Ok(new { token, message = "Пользователь успешно зарегистрирован" });
     }
     catch (Exception ex)

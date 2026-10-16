@@ -36,9 +36,9 @@ public class AuthService : IAuthService
         _clientService = clientService;
     }
 
-    public async Task<string> SignUpAsync(string email, string password, string? requestedRole = null)
+    public async Task<string> SignUpAsync(RegisterDto dto, string? requestedRole = null)
     {
-        string normalizedEmail = email.Trim();
+        string normalizedEmail = dto.Email.Trim();
         string role = await ResolveRoleAsync(normalizedEmail, requestedRole);
 
         var user = new User
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
             Roles = new[] { role }
         };
 
-        var result = await _userManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, dto.Password);
 
         if (!result.Succeeded)
         {
@@ -65,6 +65,7 @@ public class AuthService : IAuthService
             Guid = user.Id,
             FullName = normalizedEmail,
             IsActive = true,
+            IsOffline = dto.IsOffline 
         };
 
         ClientDto savedClient = await _clientService.CreateClientAsync(client);

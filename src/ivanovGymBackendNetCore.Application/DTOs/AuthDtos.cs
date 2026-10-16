@@ -27,6 +27,7 @@ public class RegisterDto
     /// сделан аутентифицированным администратором; публичная регистрация всегда получает «user».
     /// </summary>
     public string? Role { get; set; }
+    public bool IsOffline { get; set; }
 }
 
 public class ChangePasswordDto
